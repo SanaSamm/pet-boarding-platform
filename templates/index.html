@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paw Partner Tunisia - Pet Boarding</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <style>
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        header { background: #fff; border-bottom: 1px solid #eee; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #f39c12; }
+        nav a { margin-left: 1.5rem; text-decoration: none; color: #333; }
+        .hero { background: #f9f9f9; padding: 4rem 2rem; text-align: center; }
+        .hero h1 { margin-bottom: 1rem; color: #2c3e50; }
+        #map { height: 500px; width: 100%; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Paw Partner Tunisia</div>
+        <nav>
+            <a href="#">Login</a>
+            <a href="#">Register</a>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <div class="container">
+            <h1>Find trusted pet boarding services near you in Tunisia.</h1>
+            <p>Your pet deserves a vacation too!</p>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        const map = L.map('map').setView([33.8869, 9.5375], 6);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        async function loadServices() {
+            try {
+                const response = await fetch('/services');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const services = await response.ok ? await response.json() : [];
+                
+                // Fallback for demo if no services exist yet
+                const data = Array.isArray(services) ? services : [];
+                
+                data.forEach(service => {
+                    if (service.latitude && service.longitude) {
+                        const marker = L.marker([service.latitude, service.longitude]).addTo(map);
+                        marker.bindPopup(`
+                            <strong>${service.name}</strong><br>
+                            Price: ${service.price_per_day} TND/day<br>
+                            Capacity: ${service.capacity} pets
+                        `);
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching services:', error);
+            }
+        }
+
+        loadServices();
+    </script>
+</body>
+</html>
