@@ -6,13 +6,35 @@
     <title>Find Care - Paw Partner Tunisia</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
     <style>
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        header { background: #fff; border-bottom: 1px solid #eee; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #fdfdfd; }
+        header { background: #fff; border-bottom: 1px solid #eee; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .logo { font-size: 1.5rem; font-weight: bold; color: #f39c12; text-decoration: none; }
         nav a { margin-left: 1.5rem; text-decoration: none; color: #333; font-weight: 500; }
-        .content { padding: 2rem; max-width: 1200px; margin: 0 auto; }
-        h1 { color: #2c3e50; }
-        #map { height: 600px; width: 100%; border-radius: 12px; margin-top: 1rem; }
+        
+        .search-section { background: #fff; padding: 2rem; border-bottom: 1px solid #eee; }
+        .filters { display: flex; gap: 2rem; max-width: 1200px; margin: 0 auto; align-items: flex-end; flex-wrap: wrap; }
+        .filter-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .filter-group label { font-weight: 600; color: #2c3e50; font-size: 0.9rem; }
+        .filter-group input[type="text"] { padding: 0.8rem; border: 1px solid #ddd; border-radius: 6px; min-width: 250px; }
+        .filter-group input[type="range"] { width: 200px; }
+        .checkbox-group { display: flex; align-items: center; gap: 0.5rem; height: 45px; }
+        
+        .main-container { display: flex; flex-direction: column; gap: 2rem; max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
+        #map { height: 400px; width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        
+        .services-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; margin-top: 1rem; }
+        .service-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eee; transition: transform 0.2s; }
+        .service-card:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .card-img { height: 180px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999; }
+        .card-content { padding: 1.5rem; }
+        .card-title { font-size: 1.25rem; font-weight: bold; color: #2c3e50; margin-bottom: 0.5rem; }
+        .card-location { color: #666; font-size: 0.9rem; margin-bottom: 1rem; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 1rem; }
+        .price { font-weight: bold; color: #f39c12; font-size: 1.1rem; }
+        .capacity { color: #888; font-size: 0.85rem; }
+        
+        .btn-search { background: #f39c12; color: white; border: none; padding: 0.8rem 2rem; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-search:hover { background: #e67e22; }
     </style>
 </head>
 <body>
@@ -23,10 +45,71 @@
             <a href="/offer-care">Offer Care</a>
         </nav>
     </header>
-    <div class="content">
-        <h1>Available Pet Boarding Services</h1>
-        <p>Browse trusted pet sitters and boarding facilities across Tunisia.</p>
+
+    <div class="search-section">
+        <div class="filters">
+            <div class="filter-group">
+                <label>Location</label>
+                <input type="text" placeholder="e.g. Tunis, Sousse, Hammamet...">
+            </div>
+            <div class="filter-group">
+                <label>Max Price: <span id="priceValue">100</span> TND/day</label>
+                <input type="range" min="10" max="200" value="100" id="priceRange">
+            </div>
+            <div class="filter-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="availability">
+                    <label for="availability">Show only available</label>
+                </div>
+            </div>
+            <button class="btn-search">Update Results</button>
+        </div>
+    </div>
+
+    <div class="main-container">
         <div id="map"></div>
+
+        <div>
+            <h2>Results near you</h2>
+            <div class="services-list">
+                <!-- Example Card 1 -->
+                <div class="service-card">
+                    <div class="card-img">Pet Care Photo</div>
+                    <div class="card-content">
+                        <div class="card-title">Cozy Pet Retreat</div>
+                        <div class="card-location">📍 Tunis, La Marsa</div>
+                        <div class="card-footer">
+                            <span class="price">45 TND/day</span>
+                            <span class="capacity">Capacity: 5 pets</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Example Card 2 -->
+                <div class="service-card">
+                    <div class="card-img">Pet Care Photo</div>
+                    <div class="card-content">
+                        <div class="card-title">Happy Paws Boarding</div>
+                        <div class="card-location">📍 Sousse, El Kantaoui</div>
+                        <div class="card-footer">
+                            <span class="price">35 TND/day</span>
+                            <span class="capacity">Capacity: 10 pets</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Example Card 3 -->
+                <div class="service-card">
+                    <div class="card-img">Pet Care Photo</div>
+                    <div class="card-content">
+                        <div class="card-title">Safe Haven Kennels</div>
+                        <div class="card-location">📍 Hammamet Nord</div>
+                        <div class="card-footer">
+                            <span class="price">50 TND/day</span>
+                            <span class="capacity">Capacity: 8 pets</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -36,16 +119,26 @@
             maxZoom: 19, attribution: '&copy; OpenStreetMap'
         }).addTo(map);
 
+        // Price slider update
+        const priceRange = document.getElementById('priceRange');
+        const priceValue = document.getElementById('priceValue');
+        priceRange.addEventListener('input', (e) => {
+            priceValue.textContent = e.target.value;
+        });
+
+        // Current actual implementation (keeping existing functionality)
         async function loadServices() {
             try {
                 const response = await fetch('/services');
                 const data = await response.json();
-                data.forEach(service => {
-                    if (service.latitude && service.longitude) {
-                        L.marker([service.latitude, service.longitude]).addTo(map)
-                            .bindPopup(`<strong>${service.name}</strong><br>Price: ${service.price_per_day} TND/day`);
-                    }
-                });
+                if (Array.isArray(data)) {
+                    data.forEach(service => {
+                        if (service.latitude && service.longitude) {
+                            L.marker([service.latitude, service.longitude]).addTo(map)
+                                .bindPopup(`<strong>${service.name}</strong><br>Price: ${service.price_per_day} TND/day`);
+                        }
+                    });
+                }
             } catch (e) { console.error(e); }
         }
         loadServices();
