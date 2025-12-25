@@ -1,7 +1,7 @@
-# Safepaws
+# SafePaws
 
 ## Overview
-Safepaws is a two-sided pet boarding platform specifically designed for the Tunisian market. Its mission is to provide "A safe home for every pet" by connecting pet owners with trusted care providers.
+SafePaws is a two-sided pet boarding platform specifically designed for the Tunisian market. Its mission is to provide "A safe home for every pet" by connecting pet owners with trusted care providers.
 
 ## Tech Stack
 - **Framework**: Flask 3.x with Flask-Smorest for REST API
@@ -11,7 +11,7 @@ Safepaws is a two-sided pet boarding platform specifically designed for the Tuni
 - **Documentation**: OpenAPI 3.0 / Swagger UI at `/swagger-ui`
 
 ## Branding
-- **Name**: Safepaws
+- **Name**: SafePaws
 - **Tagline**: A safe home for every pet.
 - **Colors**: Warm Orange, Sand, Soft Blue.
 
@@ -19,7 +19,7 @@ Safepaws is a two-sided pet boarding platform specifically designed for the Tuni
 ```
 ├── app.py              # Application factory and entry point
 ├── templates/          # Jinja2 HTML templates
-│   ├── index.html      # Rebranded Safepaws landing page
+│   ├── index.html      # Rebranded SafePaws landing page
 │   ├── find_care.html  # Pet owner journey
 │   └── offer_care.html # Provider journey
 ├── static/

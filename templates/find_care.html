@@ -3,26 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Care - Paw Partner Tunisia</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <title>Find Care - SafePaws</title>
+    <link rel="stylesheet" href="/static/css/style.css">
     <style>
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #fdfdfd; }
-        header { background: #fff; border-bottom: 1px solid #eee; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 1.5rem; font-weight: bold; color: #f39c12; text-decoration: none; }
-        nav a { margin-left: 1.5rem; text-decoration: none; color: #333; font-weight: 500; }
-        
-        .search-section { background: #fff; padding: 2rem; border-bottom: 1px solid #eee; }
-        .filters { display: flex; gap: 2rem; max-width: 1200px; margin: 0 auto; align-items: flex-end; flex-wrap: wrap; }
-        .filter-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .hero-search {
+            position: relative;
+            background: url('/static/images/hero-bg.jpg') no-repeat center center;
+            background-size: cover;
+            padding: 8rem 2rem;
+            color: white;
+            text-align: center;
+        }
+        .hero-search::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+        .search-container {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            color: #333;
+        }
+        .filters { display: flex; gap: 1.5rem; align-items: flex-end; flex-wrap: wrap; justify-content: center; }
+        .filter-group { display: flex; flex-direction: column; gap: 0.5rem; text-align: left; }
         .filter-group label { font-weight: 600; color: #2c3e50; font-size: 0.9rem; }
-        .filter-group input[type="text"] { padding: 0.8rem; border: 1px solid #ddd; border-radius: 6px; min-width: 250px; }
-        .filter-group input[type="range"] { width: 200px; }
+        .filter-group input[type="text"] { padding: 0.8rem; border: 1px solid #ddd; border-radius: 6px; min-width: 200px; }
+        .filter-group input[type="range"] { width: 150px; }
         .checkbox-group { display: flex; align-items: center; gap: 0.5rem; height: 45px; }
         
-        .main-container { display: flex; flex-direction: column; gap: 2rem; max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
+        .main-content { max-width: 1200px; margin: 3rem auto; padding: 0 2rem; }
+        .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; }
+        
+        /* Map Section Below Results */
+        .map-section { margin-top: 4rem; }
         #map { height: 400px; width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         
-        .services-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; margin-top: 1rem; }
         .service-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eee; transition: transform 0.2s; }
         .service-card:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .card-img { height: 180px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999; }
@@ -31,91 +55,84 @@
         .card-location { color: #666; font-size: 0.9rem; margin-bottom: 1rem; }
         .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 1rem; }
         .price { font-weight: bold; color: #f39c12; font-size: 1.1rem; }
-        .capacity { color: #888; font-size: 0.85rem; }
-        
         .btn-search { background: #f39c12; color: white; border: none; padding: 0.8rem 2rem; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
         .btn-search:hover { background: #e67e22; }
     </style>
 </head>
 <body>
     <header>
-        <a href="/" class="logo-container" style="display: flex; align-items: center; gap: 0.8rem; text-decoration: none;">
-            <img src="/static/images/logo.png" alt="Safepaws Logo" style="width: 40px; height: 40px; border-radius: 8px;">
-            <span class="logo-text" style="font-size: 1.5rem; font-weight: bold; color: #f39c12;">Safepaws</span>
+        <a href="/" class="logo-container">
+            <img src="/static/images/logo.png" alt="SafePaws Logo" class="logo-img">
+            <span class="logo-text">SafePaws</span>
         </a>
         <nav>
             <a href="/">Home</a>
             <a href="/find-care">Find Care</a>
             <a href="/offer-care">Offer Care</a>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
         </nav>
     </header>
 
-    <div class="search-section">
-        <div class="filters">
-            <div class="filter-group">
-                <label>Location</label>
-                <input type="text" placeholder="e.g. Tunis, Sousse, Hammamet...">
-            </div>
-            <div class="filter-group">
-                <label>Max Price: <span id="priceValue">100</span> TND/day</label>
-                <input type="range" min="10" max="200" value="100" id="priceRange">
-            </div>
-            <div class="filter-group">
-                <div class="checkbox-group">
-                    <input type="checkbox" id="availability">
-                    <label for="availability">Show only available</label>
+    <div class="hero-search">
+        <div class="search-container">
+            <h2 style="margin-top:0">Search for Pet Care</h2>
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Location</label>
+                    <input type="text" placeholder="e.g. Tunis, Sousse...">
                 </div>
-            </div>
-            <button class="btn-search">Update Results</button>
-        </div>
-    </div>
-
-    <div class="main-container">
-        <div id="map"></div>
-
-        <div>
-            <h2>Results near you</h2>
-            <div class="services-list">
-                <!-- Example Card 1 -->
-                <div class="service-card">
-                    <div class="card-img">Pet Care Photo</div>
-                    <div class="card-content">
-                        <div class="card-title">Cozy Pet Retreat</div>
-                        <div class="card-location">📍 Tunis, La Marsa</div>
-                        <div class="card-footer">
-                            <span class="price">45 TND/day</span>
-                            <span class="capacity">Capacity: 5 pets</span>
-                        </div>
+                <div class="filter-group">
+                    <label>Max Price: <span id="priceValue">100</span> TND/day</label>
+                    <input type="range" min="10" max="200" value="100" id="priceRange">
+                </div>
+                <div class="filter-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="availability">
+                        <label for="availability">Available only</label>
                     </div>
                 </div>
-                <!-- Example Card 2 -->
-                <div class="service-card">
-                    <div class="card-img">Pet Care Photo</div>
-                    <div class="card-content">
-                        <div class="card-title">Happy Paws Boarding</div>
-                        <div class="card-location">📍 Sousse, El Kantaoui</div>
-                        <div class="card-footer">
-                            <span class="price">35 TND/day</span>
-                            <span class="capacity">Capacity: 10 pets</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Example Card 3 -->
-                <div class="service-card">
-                    <div class="card-img">Pet Care Photo</div>
-                    <div class="card-content">
-                        <div class="card-title">Safe Haven Kennels</div>
-                        <div class="card-location">📍 Hammamet Nord</div>
-                        <div class="card-footer">
-                            <span class="price">50 TND/day</span>
-                            <span class="capacity">Capacity: 8 pets</span>
-                        </div>
-                    </div>
-                </div>
+                <button class="btn-search">Search</button>
             </div>
         </div>
     </div>
 
+    <div class="main-content">
+        <div class="results-header">
+            <h2>Boarding services in Tunisia</h2>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="card-img">Pet Care Photo</div>
+                <div class="card-content">
+                    <div class="card-title">Cozy Pet Retreat</div>
+                    <div class="card-location">📍 Tunis, La Marsa</div>
+                    <div class="card-footer">
+                        <span class="price">45 TND/day</span>
+                        <span class="btn-search" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Details</span>
+                    </div>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="card-img">Pet Care Photo</div>
+                <div class="card-content">
+                    <div class="card-title">Happy Paws Boarding</div>
+                    <div class="card-location">📍 Sousse, El Kantaoui</div>
+                    <div class="card-footer">
+                        <span class="price">35 TND/day</span>
+                        <span class="btn-search" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Details</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="map-section">
+            <h2>Explore on Map</h2>
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script>
         const map = L.map('map').setView([33.8869, 9.5375], 6);
@@ -123,15 +140,14 @@
             maxZoom: 19, attribution: '&copy; OpenStreetMap'
         }).addTo(map);
 
-        // Price slider update
         const priceRange = document.getElementById('priceRange');
         const priceValue = document.getElementById('priceValue');
         priceRange.addEventListener('input', (e) => {
             priceValue.textContent = e.target.value;
         });
 
-        // Current actual implementation (keeping existing functionality)
-        async function loadServices() {
+        // Load markers on map
+        async function loadMarkers() {
             try {
                 const response = await fetch('/services');
                 const data = await response.json();
@@ -145,7 +161,8 @@
                 }
             } catch (e) { console.error(e); }
         }
-        loadServices();
+        loadMarkers();
     </script>
+</body>
 </body>
 </html>
