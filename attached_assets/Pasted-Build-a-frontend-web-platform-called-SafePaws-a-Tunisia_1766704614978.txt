@@ -1,0 +1,74 @@
+Build a frontend web platform called “SafePaws”, a Tunisian pet boarding marketplace.
+
+This is NOT a demo UI — it must connect to an existing Flask REST API (already deployed) and strictly reuse its endpoints. Do not invent backend logic.
+
+Branding:
+- Name: SafePaws
+- Tagline: “Because your pet deserves a safe place — even when you’re away.”
+- Identity: warm, trustworthy, Tunisian-first
+- Currency: TND
+
+Homepage:
+- Hero section with pet background image
+- Two clear call-to-actions:
+  1) “Find trusted care near me”
+  2) “Offer my pet care services”
+
+Pet Owner Flow (Find Care):
+- Clicking “Find trusted care near me” opens a Find Care page
+- Minimal UI, pet background (no map at top)
+- Filters:
+  - Location (text input, Tunisian cities)
+  - Max price per day (slider, TND)
+  - Checkbox: Show only available
+- Button: “Update results”
+- Results section:
+  - List of service cards
+  - Map view using Leaflet + OpenStreetMap
+- Each card shows:
+  - Service name
+  - Location
+  - Price/day
+  - Capacity
+  - Availability
+- Data comes from:
+  GET /services
+  with query params for filtering
+
+Care Provider Flow (Offer Care):
+- Clicking “Offer my pet care services” opens a provider landing page
+- Explains benefits:
+  - Earn extra income
+  - Flexible availability
+  - Trusted community
+- CTA: Register / Login
+- After login, show a form to create or manage a boarding service:
+  - Service name
+  - Location (city)
+  - Price per day (TND)
+  - Capacity
+  - Latitude / Longitude
+- Uses:
+  POST /provider/register
+  POST /provider/login
+  POST /services
+  PUT /services/{id}
+
+Authentication:
+- Use JWT
+- Store token in localStorage
+- Send Authorization header on protected requests
+
+Map:
+- Use Leaflet (OpenStreetMap only)
+- Show service markers based on lat/lng from API
+- Clicking marker shows service info
+
+Constraints:
+- No Google Maps
+- No backend changes unless required for filtering
+- UI must align with existing Swagger endpoints
+- Clean, modern, responsive design inspired by Paw Partner and Pawfinity
+
+Goal:
+Deliver a usable pet boarding platform UI that demonstrates real market value and integrates fully with the existing API.
