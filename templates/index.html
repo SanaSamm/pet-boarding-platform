@@ -7,12 +7,46 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <style>
         body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        header { background: #fff; border-bottom: 1px solid #eee; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        header { background: #fff; border-bottom: 1px solid #eee; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .logo { font-size: 1.5rem; font-weight: bold; color: #f39c12; }
-        nav a { margin-left: 1.5rem; text-decoration: none; color: #333; }
-        .hero { background: #f9f9f9; padding: 4rem 2rem; text-align: center; }
-        .hero h1 { margin-bottom: 1rem; color: #2c3e50; }
-        #map { height: 500px; width: 100%; }
+        nav a { margin-left: 1.5rem; text-decoration: none; color: #333; font-weight: 500; }
+        .hero { 
+            position: relative;
+            background: url('/static/images/hero-bg.jpg') no-repeat center center;
+            background-size: cover;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+        .hero .container {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+        .hero h1 { 
+            font-size: 2.5rem;
+            margin-bottom: 1rem; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        #map { height: 600px; width: 100%; }
         .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
     </style>
 </head>
