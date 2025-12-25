@@ -71,6 +71,11 @@ def create_app() -> Flask:
         from flask import render_template
         return render_template("register.html")
 
+    @app.route("/service-details")
+    def service_details():
+        from flask import render_template
+        return render_template("details.html")
+
     api.register_blueprint(AuthBlueprint)
     api.register_blueprint(PetsBlueprint)
     api.register_blueprint(ServicesBlueprint)

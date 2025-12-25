@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Details - SafePaws</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .details-container { max-width: 1000px; margin: 4rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .details-header { display: flex; gap: 2rem; margin-bottom: 3rem; flex-wrap: wrap; }
+        .details-img { flex: 1; min-width: 300px; height: 400px; border-radius: 12px; overflow: hidden; background: #f0f0f0; }
+        .details-img img { width: 100%; height: 100%; object-fit: cover; }
+        .details-info { flex: 1; min-width: 300px; }
+        .details-info h1 { margin-top: 0; color: #2c3e50; font-size: 2.5rem; }
+        .price-tag { font-size: 1.5rem; color: #f39c12; font-weight: bold; margin: 1rem 0; }
+        .rating { color: #f1c40f; font-size: 1.2rem; margin-bottom: 1rem; }
+        .location { color: #666; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; }
+        .services-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem; }
+        .service-item { display: flex; align-items: center; gap: 0.8rem; background: #f9f9f9; padding: 1rem; border-radius: 8px; }
+        .service-icon { color: #f39c12; font-weight: bold; }
+        .booking-card { background: #fffaf0; border: 1px solid #ffe8cc; padding: 2rem; border-radius: 12px; margin-top: 2rem; text-align: center; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo-container">
+            <img src="/static/images/logo.png" alt="SafePaws Logo" class="logo-img">
+            <span class="logo-text">SafePaws</span>
+        </a>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/find-care">Find Care</a>
+            <a href="/offer-care">Offer Care</a>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="details-container">
+            <div class="details-header">
+                <div class="details-img">
+                    <img id="serviceImg" src="" alt="Service Image">
+                </div>
+                <div class="details-info">
+                    <h1 id="serviceName">Service Name</h1>
+                    <div class="rating">★★★★★ (4.8)</div>
+                    <div class="location">📍 <span id="serviceLoc">Tunis</span></div>
+                    <p id="serviceDesc">Experience premium pet care in a safe and loving environment. Our facility is equipped to handle all your pet's needs while you're away.</p>
+                    <div class="price-tag"><span id="servicePrice">0</span> TND/day</div>
+                    
+                    <h3>Services Provided:</h3>
+                    <div class="services-list">
+                        <div class="service-item"><span class="service-icon">✓</span> Professional Grooming</div>
+                        <div class="service-item"><span class="service-icon">✓</span> Premium Pet Food</div>
+                        <div class="service-item"><span class="service-icon">✓</span> Daily Walks</div>
+                        <div class="service-item"><span class="service-icon">✓</span> 24/7 Supervision</div>
+                        <div class="service-item"><span class="service-icon">✓</span> Shower & Spa</div>
+                        <div class="service-item"><span class="service-icon">✓</span> Veterinary Access</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="booking-card">
+                <h2>Ready to book?</h2>
+                <p>Contact the provider to check availability and secure your spot.</p>
+                <button class="btn-primary" style="padding: 1rem 3rem;">Contact Provider</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulating data extraction from URL or state
+        const params = new URLSearchParams(window.location.search);
+        document.getElementById('serviceName').textContent = params.get('name') || 'Premium Pet Care';
+        document.getElementById('serviceLoc').textContent = params.get('loc') || 'Tunis, La Marsa';
+        document.getElementById('servicePrice').textContent = params.get('price') || '45';
+        document.getElementById('serviceImg').src = params.get('img') || '/static/images/hero-bg.jpg';
+    </script>
+</body>
+</html>
