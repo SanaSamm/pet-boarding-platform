@@ -1,0 +1,14 @@
+Flask
+flask-smorest
+flask-smorest[swagger]
+flask-sqlalchemy
+flask-jwt-extended
+marshmallow
+marshmallow-sqlalchemy
+passlib
+python-dotenv
+sqlalchemy
+flask-sqlalchemy
+flask-jwt-extended
+werkzeug
+flask-limiter
