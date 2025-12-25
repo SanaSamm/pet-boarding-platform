@@ -1,0 +1,128 @@
+Build a frontend-only web platform called “SafePaws”, a Tunisian pet boarding marketplace.
+
+IMPORTANT:
+- This task is UI / UX ONLY.
+- Do NOT implement backend logic.
+- Do NOT mock data.
+- Do NOT hardcode API responses.
+- Just build the pages, components, buttons, forms, and layout.
+- All buttons and forms must be ready to be connected later to an existing Flask REST API.
+
+Branding & Identity:
+- Platform name: SafePaws
+- Tagline: “Because your pet deserves a safe place — even when you’re away.”
+- Identity: warm, trustworthy, community-based, Tunisian-first
+- Currency used in UI: TND
+- Style inspiration: Paw Partner, Pawfinity (clean, modern, friendly)
+
+-----------------------------------
+HOMEPAGE
+-----------------------------------
+- Hero section with a background image of pets (dogs & cats)
+- Large headline with the tagline
+- Subtext: “Find trusted pet boarding services across Tunisia.”
+- Two main Call-To-Action buttons:
+  1) “Find trusted care near me”
+  2) “Offer my pet care services”
+- Simple top navigation:
+  - Home
+  - Find Care
+  - Offer Care
+  - Login
+  - Register
+
+-----------------------------------
+PET OWNER FLOW – FIND CARE
+-----------------------------------
+Triggered when clicking “Find trusted care near me”.
+
+Find Care Page:
+- Clean, minimal design
+- Pet-themed background image (no map at the top)
+- Filter section with:
+  - Location input (placeholder: “e.g. Tunis, Sousse, Hammamet”)
+  - Max price per day slider (TND)
+  - Checkbox: “Show only available”
+  - Button: “Update results”
+- Results section layout:
+  - Left side: list of service cards
+  - Right side: map area (Leaflet + OpenStreetMap)
+
+Service Card UI:
+- Service name
+- Location (city)
+- Price per day (TND)
+- Capacity
+- Availability badge (Available / Full)
+- Button: “View details”
+
+Map UI:
+- Use Leaflet with OpenStreetMap tiles
+- Show placeholder markers
+- Clicking a marker opens a small info popup (service name + price)
+- No real data fetching yet (placeholders only)
+
+-----------------------------------
+CARE PROVIDER FLOW – OFFER CARE
+-----------------------------------
+Triggered when clicking “Offer my pet care services”.
+
+Provider Landing Page:
+- Headline: “Turn your love for pets into a service.”
+- Short description about earning income and helping pet owners
+- Benefits list:
+  - Earn extra income
+  - Full flexibility
+  - Verified pet owner community
+- CTA buttons:
+  - “Register as a Care Provider”
+  - “Login”
+
+After Login (UI only):
+- Provider Dashboard page layout
+- Section: “Create or Manage My Service”
+- Service Form UI with inputs:
+  - Service Name
+  - Location (City)
+  - Price per day (TND)
+  - Capacity (number of pets)
+  - Latitude
+  - Longitude
+- Button: “Save Service Details”
+- This form must be visually ready to be connected later to API endpoints
+
+-----------------------------------
+AUTHENTICATION PAGES (UI ONLY)
+-----------------------------------
+Login Page:
+- Email input
+- Password input
+- Login button
+- Note text: “Authentication handled via secure API (JWT)”
+
+Register Page:
+- Role selector:
+  - Pet Owner
+  - Care Provider
+- Name
+- Email
+- Password
+- Register button
+
+-----------------------------------
+TECH & UI CONSTRAINTS
+-----------------------------------
+- Frontend only (HTML/CSS/JS or React — your choice)
+- Responsive design (mobile-friendly)
+- No Google Maps (Leaflet + OpenStreetMap only)
+- No backend logic
+- No API calls yet
+- Clear structure so code can later be moved to VS Code and connected to Flask API
+
+-----------------------------------
+GOAL
+-----------------------------------
+Deliver a realistic, market-ready UI for a Tunisian pet boarding platform that:
+- Clearly shows two user journeys (pet owners & care providers)
+- Is visually aligned with modern pet-care platforms
+- Is ready to be connected later to an existing REST API

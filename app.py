@@ -61,6 +61,16 @@ def create_app() -> Flask:
         from flask import render_template
         return render_template("offer_care.html")
 
+    @app.route("/login")
+    def login():
+        from flask import render_template
+        return render_template("login.html")
+
+    @app.route("/register")
+    def register():
+        from flask import render_template
+        return render_template("register.html")
+
     api.register_blueprint(AuthBlueprint)
     api.register_blueprint(PetsBlueprint)
     api.register_blueprint(ServicesBlueprint)

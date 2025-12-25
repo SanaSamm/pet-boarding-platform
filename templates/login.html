@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Safepaws</title>
+    <style>
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #fdfdfd; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .auth-card { background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #eee; width: 100%; max-width: 400px; text-align: center; }
+        .logo-container { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; justify-content: center; margin-bottom: 2rem; }
+        .logo-img { width: 40px; height: 40px; border-radius: 8px; }
+        .logo-text { font-size: 1.5rem; font-weight: bold; color: #f39c12; }
+        h1 { color: #2c3e50; margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1.2rem; text-align: left; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #444; font-size: 0.9rem; }
+        .form-group input { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
+        .btn-primary { background: #f39c12; color: white; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: bold; border: none; width: 100%; cursor: pointer; font-size: 1rem; margin-top: 1rem; }
+        .note { margin-top: 1.5rem; font-size: 0.85rem; color: #888; }
+        .footer-link { margin-top: 1.5rem; font-size: 0.9rem; }
+        .footer-link a { color: #f39c12; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <a href="/" class="logo-container">
+            <img src="/static/images/logo.png" alt="Safepaws Logo" class="logo-img">
+            <span class="logo-text">Safepaws</span>
+        </a>
+        <h1>Login</h1>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" placeholder="••••••••">
+        </div>
+        <button class="btn-primary">Login</button>
+        <p class="note">Authentication handled via secure API (JWT)</p>
+        <div class="footer-link">
+            Don't have an account? <a href="/register">Register</a>
+        </div>
+    </div>
+</body>
+</html>
