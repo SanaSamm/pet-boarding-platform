@@ -85,14 +85,24 @@ def _llm_answer(query_text, matches):
         resp = requests.post(
             model_url,
             headers={"Authorization": f"Bearer {token}"},
-            json={"inputs": prompt, "parameters": {"max_new_tokens": 180, "temperature": 0.2, "return_full_text": False}},
+            json={
+                "inputs": prompt,
+                "parameters": {"max_new_tokens": 180, "temperature": 0.2, "return_full_text": False},
+                "options": {"wait_for_model": True},
+            },
             timeout=10,
         )
         if not resp.ok:
             return None
         data = resp.json()
+        # HF can return list[{"generated_text": ...}] or {"generated_text": ...} or {"error": ...}
+        if isinstance(data, dict):
+            if data.get("error"):
+                return None
+            text = data.get("generated_text") or data.get("text")
+            return text.strip() if text else None
         if isinstance(data, list) and data and isinstance(data[0], dict):
-            text = data[0].get("generated_text")
+            text = data[0].get("generated_text") or data[0].get("text")
             return text.strip() if text else None
     except Exception:
         return None
