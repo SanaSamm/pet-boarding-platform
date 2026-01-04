@@ -170,6 +170,10 @@ if __name__ == "__main__":
 
     with app.app_context():
         def _ensure_provider_columns():
+            def _should_ignore_migration_error(err):
+                msg = str(err).lower()
+                return ("no such table" in msg) or ("duplicate column name" in msg)
+
             # Add newly introduced columns to providers table if they are missing.
             # This is a small development-time migration helper. For production use Alembic.
             conn = db.engine.connect()
@@ -185,19 +189,22 @@ if __name__ == "__main__":
                         print("Applying migration: add providers.bio")
                         conn.execute(text("ALTER TABLE providers ADD COLUMN bio TEXT"))
                     except Exception as e:
-                        print("Failed to add providers.bio:", e)
+                        if not _should_ignore_migration_error(e):
+                            print("Failed to add providers.bio:", e)
                 if 'photo_url' not in cols:
                     try:
                         print("Applying migration: add providers.photo_url")
                         conn.execute(text("ALTER TABLE providers ADD COLUMN photo_url VARCHAR(255)"))
                     except Exception as e:
-                        print("Failed to add providers.photo_url:", e)
+                        if not _should_ignore_migration_error(e):
+                            print("Failed to add providers.photo_url:", e)
                 if 'services_offered' not in cols:
                     try:
                         print("Applying migration: add providers.services_offered")
                         conn.execute(text("ALTER TABLE providers ADD COLUMN services_offered TEXT"))
                     except Exception as e:
-                        print("Failed to add providers.services_offered:", e)
+                        if not _should_ignore_migration_error(e):
+                            print("Failed to add providers.services_offered:", e)
 
                 # Ensure boarding_services has geolocation & soft-delete columns (dev migration helper)
                 try:
@@ -233,7 +240,8 @@ if __name__ == "__main__":
                         conn.execute(text("ALTER TABLE boarding_services ADD COLUMN deleted_at DATETIME"))
                         added.append('deleted_at')
                 except Exception as e:
-                    print('Failed to apply boarding_services migrations:', e)
+                    if not _should_ignore_migration_error(e):
+                        print('Failed to apply boarding_services migrations:', e)
 
                 if added:
                     print('Added boarding_services columns:', ', '.join(added))
@@ -254,7 +262,8 @@ if __name__ == "__main__":
                         conn.execute(text("DROP TABLE IF EXISTS reviews"))
                         conn.execute(text("ALTER TABLE reviews_new RENAME TO reviews"))
                     except Exception as e:
-                        print('Failed to migrate reviews:', e)
+                        if not _should_ignore_migration_error(e):
+                            print('Failed to migrate reviews:', e)
                         # swallow; db will create table later via SQLAlchemy models
 
                 # Create indexes for frequent lookups (SQLite)
@@ -264,7 +273,8 @@ if __name__ == "__main__":
                     conn.execute(text("CREATE INDEX IF NOT EXISTS idx_services_provider_id ON boarding_services(provider_id)"))
                     conn.execute(text("CREATE INDEX IF NOT EXISTS idx_services_is_deleted ON boarding_services(is_deleted)"))
                 except Exception as e:
-                    print("Failed to create indexes:", e)
+                    if not _should_ignore_migration_error(e):
+                        print("Failed to create indexes:", e)
 
                 # Ensure messages.is_read exists for unread badge logic
                 try:
@@ -278,7 +288,8 @@ if __name__ == "__main__":
                         print("Applying migration: add messages.is_read")
                         conn.execute(text("ALTER TABLE messages ADD COLUMN is_read BOOLEAN DEFAULT 0"))
                     except Exception as e:
-                        print("Failed to add messages.is_read:", e)
+                        if not _should_ignore_migration_error(e):
+                            print("Failed to add messages.is_read:", e)
 
 
             finally:

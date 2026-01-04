@@ -1,6 +1,7 @@
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from flask import request
+import os
 
 from db import db
 from models.service import BoardingServiceModel
@@ -51,6 +52,52 @@ def _build_highlights(services, avg_rating, review_count):
         parts.append(f"From {min_price:g} TND/day")
 
     return " | ".join(parts) if parts else None
+
+
+def _llm_answer(query_text, matches):
+    token = os.getenv("HF_API_TOKEN")
+    if not token:
+        return None
+
+    model_url = os.getenv(
+        "HF_MODEL_URL",
+        "https://api-inference.huggingface.co/models/tencent/HY-MT1.5-1.8B"
+    )
+
+    lines = []
+    for m in matches[:5]:
+        price = m.get("price_per_day")
+        price_str = f"{price} TND/day" if price is not None else "price on request"
+        loc = m.get("location") or ""
+        lines.append(f"- {m.get('name')} ({loc}) - {price_str}")
+
+    listing = "\n".join(lines) if lines else "No matching services found."
+    prompt = (
+        "You are SafePaws AI concierge. Greet briefly and help the user.\n"
+        f"User query: {query_text}\n"
+        "Available services:\n"
+        f"{listing}\n"
+        "Respond with a short helpful answer and ask one follow-up question.\n"
+        "If no matches, suggest changing location, price, or service type.\n"
+    )
+
+    try:
+        resp = requests.post(
+            model_url,
+            headers={"Authorization": f"Bearer {token}"},
+            json={"inputs": prompt, "parameters": {"max_new_tokens": 180, "temperature": 0.2, "return_full_text": False}},
+            timeout=10,
+        )
+        if not resp.ok:
+            return None
+        data = resp.json()
+        if isinstance(data, list) and data and isinstance(data[0], dict):
+            text = data[0].get("generated_text")
+            return text.strip() if text else None
+    except Exception:
+        return None
+
+    return None
 
 
 def _extract_city(text):
@@ -193,6 +240,9 @@ class Concierge(MethodView):
         answer = "I found {} matching providers.".format(len(payload))
         if keyword:
             answer = "I found {} providers offering {}.".format(len(payload), keyword)
+        llm = _llm_answer(query_text, payload)
+        if llm:
+            answer = llm
         note = None
         if expanded_search:
             note = "No exact matches in {}. Showing providers outside that city.".format(city)
