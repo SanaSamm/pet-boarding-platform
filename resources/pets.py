@@ -1,76 +1,57 @@
-"""Pet management blueprint.
-
-Owners can create, list, and delete their pets.  All routes in this
-blueprint require an authenticated owner.  Pets belong exclusively to
-their owner and cannot be managed by other owners or providers.
 """
+Pet management blueprint.
 
-from flask import request
+Owners can create, list, and delete their pets.
+All routes require authentication.
+Pets belong exclusively to their owner.
+"""
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 from db import db
 from models.pet import PetModel
 from models.owner import OwnerModel
-from schemas.pet import PetSchema
+from schemas.pet import PetSchema, PetCreateSchema
 
-blp = Blueprint(
-    "Pets", __name__, description="Operations on pets (owner-only)"
-)
+blp = Blueprint("Pets", __name__, description="Owner pets")
 
 
 @blp.route("/pets")
 class PetsList(MethodView):
-    """Endpoint to list and create pets for the current owner."""
 
+    # ---------- GET /pets ----------
     @jwt_required()
     @blp.response(200, PetSchema(many=True))
     def get(self):
-        # Ensure the requester is an owner
-        identity = get_jwt_identity()
-        if identity.get("role") != "owner":
-            abort(403, message="Only owners can view their pets.")
+        owner_id = int(get_jwt_identity())
+        claims = get_jwt()
 
-        owner_id = identity["id"]
+        if claims.get("role") != "owner":
+            abort(403, message="Only owners can view pets")
+
         owner = OwnerModel.query.get_or_404(owner_id)
         return owner.pets.all()
 
+    # ---------- POST /pets ----------
     @jwt_required()
-    @blp.arguments(PetSchema)
+    @blp.arguments(PetCreateSchema)
     @blp.response(201, PetSchema)
     def post(self, pet_data):
-        # Ensure the requester is an owner
-        identity = get_jwt_identity()
-        if identity.get("role") != "owner":
-            abort(403, message="Only owners can create pets.")
+        owner_id = int(get_jwt_identity())
+        claims = get_jwt()
 
-        # Assign the current owner ID
+        if claims.get("role") != "owner":
+            abort(403, message="Only owners can create pets")
+
         pet = PetModel(
             name=pet_data["name"],
             type=pet_data["type"],
             age=pet_data["age"],
-            owner_id=identity["id"],
+            owner_id=owner_id   # 👈 FROM JWT ONLY
         )
+
         db.session.add(pet)
         db.session.commit()
         return pet
 
-
-@blp.route("/pets/<int:pet_id>")
-class PetResource(MethodView):
-    """Endpoint to delete a specific pet (owner-only)."""
-
-    @jwt_required()
-    def delete(self, pet_id):
-        identity = get_jwt_identity()
-        if identity.get("role") != "owner":
-            abort(403, message="Only owners can delete pets.")
-
-        pet = PetModel.query.get_or_404(pet_id)
-        if pet.owner_id != identity["id"]:
-            abort(403, message="You do not have permission to delete this pet.")
-
-        db.session.delete(pet)
-        db.session.commit()
-        return {"message": "Pet deleted."}

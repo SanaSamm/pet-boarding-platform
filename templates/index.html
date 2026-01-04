@@ -10,7 +10,7 @@
             position: relative;
             background: url('/static/images/hero-bg.jpg') no-repeat center center;
             background-size: cover;
-            height: 650px;
+            height: 600px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -46,6 +46,40 @@
         .cta-primary:hover { background: #e67e22; border-color: #e67e22; transform: scale(1.05); }
         .cta-secondary { background: rgba(255,255,255,0.1); color: white; border: 2px solid white; backdrop-filter: blur(5px); }
         .cta-secondary:hover { background: white; color: #333; transform: scale(1.05); }
+        .highlights {
+            background: white;
+            padding: 3rem 2rem 4rem;
+        }
+        .highlights h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .highlights-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+        .highlight-card {
+            background: #fffaf3;
+            border: 1px solid rgba(243,156,18,0.18);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            transition: transform 0.2s ease;
+        }
+        .highlight-card:hover { transform: translateY(-4px); }
+        .highlight-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .highlight-card .content {
+            padding: 1rem 1.2rem 1.4rem;
+        }
+        .highlight-card h3 { margin: 0.2rem 0 0.4rem; }
+        .highlight-card p { margin: 0; color: #6b7280; font-size: 0.95rem; }
     </style>
 </head>
 <body>
@@ -54,13 +88,17 @@
             <img src="/static/images/logo.png" alt="SafePaws Logo" class="logo-img">
             <span class="logo-text">SafePaws</span>
         </a>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/find-care">Find Care</a>
-            <a href="/offer-care">Offer Care</a>
-            <a href="/login">Login</a>
-            <a href="/register">Register</a>
-        </nav>
+        <div class="header-actions">
+            <nav>
+                <a href="/">Home</a>
+                <a href="/find-care">Find Care</a>
+                <a href="/offer-care">Offer Care</a>
+                <a href="/messages">Messages</a>
+                <a href="/community">Community</a>
+            </nav>
+            <a href="/login" id="loginLink">Login</a>
+            <div id="userMenu" class="user-menu"></div>
+        </div>
     </header>
 
     <div class="hero">
@@ -73,5 +111,33 @@
             </div>
         </div>
     </div>
+    <section class="highlights">
+        <h2>Why pet parents choose SafePaws</h2>
+        <div class="highlights-grid">
+            <div class="highlight-card">
+                <img src="/static/images/boarding-1.jpg" data-random-pet alt="Trusted sitters">
+                <div class="content">
+                    <h3>Verified care</h3>
+                    <p>Providers are reviewed by real owners, with transparent ratings.</p>
+                </div>
+            </div>
+            <div class="highlight-card">
+                <img src="/static/images/boarding-2.jpg" data-random-pet alt="Local care">
+                <div class="content">
+                    <h3>Nearby & affordable</h3>
+                    <p>Search by location and max price in TND to fit your budget.</p>
+                </div>
+            </div>
+            <div class="highlight-card">
+                <img src="/static/images/boarding-3.jpg" data-random-pet alt="Chat with providers">
+                <div class="content">
+                    <h3>Direct chat</h3>
+                    <p>Message providers before booking to confirm details.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="/static/js/user_menu.js"></script>
+    <script src="/static/js/pet_images.js"></script>
 </body>
 </html>

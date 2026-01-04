@@ -5,77 +5,527 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Service Details - SafePaws</title>
     <link rel="stylesheet" href="/static/css/style.css">
+
     <style>
-        .details-container { max-width: 1000px; margin: 4rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        .details-header { display: flex; gap: 2rem; margin-bottom: 3rem; flex-wrap: wrap; }
-        .details-img { flex: 1; min-width: 300px; height: 400px; border-radius: 12px; overflow: hidden; background: #f0f0f0; }
-        .details-img img { width: 100%; height: 100%; object-fit: cover; }
-        .details-info { flex: 1; min-width: 300px; }
-        .details-info h1 { margin-top: 0; color: #2c3e50; font-size: 2.5rem; }
-        .price-tag { font-size: 1.5rem; color: #f39c12; font-weight: bold; margin: 1rem 0; }
-        .rating { color: #f1c40f; font-size: 1.2rem; margin-bottom: 1rem; }
-        .location { color: #666; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; }
-        .services-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem; }
-        .service-item { display: flex; align-items: center; gap: 0.8rem; background: #f9f9f9; padding: 1rem; border-radius: 8px; }
-        .service-icon { color: #f39c12; font-weight: bold; }
-        .booking-card { background: #fffaf0; border: 1px solid #ffe8cc; padding: 2rem; border-radius: 12px; margin-top: 2rem; text-align: center; }
+        .details-container {
+            max-width: 1000px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .details-header {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .details-img {
+            flex: 1;
+            min-width: 300px;
+            height: 350px;
+            background: #f0f0f0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .details-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .details-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        .price-tag {
+            font-size: 1.4rem;
+            color: #f39c12;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        .services-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.7rem;
+        }
+        .service-item {
+            background: #f9f9f9;
+            padding: 0.7rem;
+            border-radius: 6px;
+        }
+        .booking-card {
+            margin-top: 2rem;
+            padding: 2rem;
+            border-radius: 12px;
+            background: #fffaf0;
+            border: 1px solid #ffe8cc;
+        }
+        label {
+            font-weight: 600;
+            margin-top: 1rem;
+            display: block;
+        }
+        input, select {
+            width: 100%;
+            padding: 0.6rem;
+            margin-top: 0.3rem;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        #availabilityMsg {
+            margin-top: 1rem;
+            font-weight: bold;
+        }
     </style>
 </head>
+
 <body>
-    <header>
-        <a href="/" class="logo-container">
-            <img src="/static/images/logo.png" alt="SafePaws Logo" class="logo-img">
-            <span class="logo-text">SafePaws</span>
-        </a>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/find-care">Find Care</a>
-            <a href="/offer-care">Offer Care</a>
-            <a href="/login">Login</a>
-            <a href="/register">Register</a>
-        </nav>
-    </header>
 
-    <div class="container">
-        <div class="details-container">
-            <div class="details-header">
-                <div class="details-img">
-                    <img id="serviceImg" src="" alt="Service Image">
-                </div>
-                <div class="details-info">
-                    <h1 id="serviceName">Service Name</h1>
-                    <div class="rating">★★★★★ (4.8)</div>
-                    <div class="location">📍 <span id="serviceLoc">Tunis</span></div>
-                    <p id="serviceDesc">Experience premium pet care in a safe and loving environment. Our facility is equipped to handle all your pet's needs while you're away.</p>
-                    <div class="price-tag"><span id="servicePrice">0</span> TND/day</div>
-                    
-                    <h3>Services Provided:</h3>
-                    <div class="services-list">
-                        <div class="service-item"><span class="service-icon">✓</span> Professional Grooming</div>
-                        <div class="service-item"><span class="service-icon">✓</span> Premium Pet Food</div>
-                        <div class="service-item"><span class="service-icon">✓</span> Daily Walks</div>
-                        <div class="service-item"><span class="service-icon">✓</span> 24/7 Supervision</div>
-                        <div class="service-item"><span class="service-icon">✓</span> Shower & Spa</div>
-                        <div class="service-item"><span class="service-icon">✓</span> Veterinary Access</div>
-                    </div>
-                </div>
-            </div>
+<header>
+    <a href="/" class="logo-container">
+        <img src="/static/images/logo.png" class="logo-img">
+        <span class="logo-text">SafePaws</span>
+    </a>
+    <nav class="header-actions">
+        <a href="/messages">Messages</a>
+        <a href="/login" id="loginLink">Login</a>
+        <div id="userMenu" class="user-menu"></div>
+    </nav>
+</header>
 
-            <div class="booking-card">
-                <h2>Ready to book?</h2>
-                <p>Contact the provider to check availability and secure your spot.</p>
-                <button class="btn-primary" style="padding: 1rem 3rem;">Contact Provider</button>
-            </div>
+<div class="details-container">
+
+    <div class="details-header">
+        <div class="details-img">
+            <img src="/static/images/hero-bg.jpg">
         </div>
+
+        <div class="details-info">
+            <h1 id="serviceName"></h1>
+            <div id="providerCard" style="margin-top:0.6rem;"></div>
+            <p>📍 <span id="serviceLoc"></span></p>
+            <p id="serviceExact" style="font-size:0.9rem; color:#555; margin-top:4px;"></p>
+            <p id="serviceDesc"></p>
+
+            <div class="price-tag">
+                <span id="servicePrice"></span> TND / day
+            </div>
+
+            <p><strong>Capacity:</strong> <span id="serviceCapacity">Not specified</span></p>
+
+            <h3>Services Provided</h3>
+            <div class="services-list" id="servicesList"></div>
+        </div>
+    </div> 
+
+    <!-- BOOKING -->
+    <div class="booking-card">
+        <h2>Reserve this service</h2>
+
+        <label>Start date</label>
+        <input type="date" id="startDate">
+
+        <label>End date</label>
+        <input type="date" id="endDate">
+
+        <label>Your pet</label>
+        <select id="petSelect"></select>
+
+        <p id="availabilityMsg"></p>
+
+        <button id="reserveBtn" disabled>Reserve</button>
     </div>
 
-    <script>
-        // Simulating data extraction from URL or state
-        const params = new URLSearchParams(window.location.search);
-        document.getElementById('serviceName').textContent = params.get('name') || 'Premium Pet Care';
-        document.getElementById('serviceLoc').textContent = params.get('loc') || 'Tunis, La Marsa';
-        document.getElementById('servicePrice').textContent = params.get('price') || '45';
-        document.getElementById('serviceImg').src = params.get('img') || '/static/images/hero-bg.jpg';
-    </script>
+</div>
+
+<script>
+/* -----------------------------
+   GLOBALS
+----------------------------- */
+const params = new URLSearchParams(window.location.search);
+const serviceId = params.get("id");
+
+
+
+const startDate = document.getElementById("startDate");
+const endDate = document.getElementById("endDate");
+const petSelect = document.getElementById("petSelect");
+const reserveBtn = document.getElementById("reserveBtn");
+const availabilityMsg = document.getElementById("availabilityMsg");
+
+// Defensive: if no id provided in URL, show friendly message and disable booking (safe now that DOM refs exist)
+if (!serviceId) {
+    document.getElementById("serviceName").textContent = 'Service not specified';
+    availabilityMsg.textContent = 'No service selected — please go back and choose a service.';
+    reserveBtn.disabled = true;
+    // leave providerCard as a helpful link back to search
+    document.getElementById('providerCard').innerHTML = `<p><a href="/find-care">Return to search</a></p>`;
+}
+
+/* -----------------------------
+   LOAD SERVICE
+----------------------------- */
+fetch(`/services/${serviceId}`)
+.then(res => {
+    if (!res.ok) throw new Error("Service not found");
+    return res.json();
+})
+.then(service => {
+    console.log('Fetched service', service); // debug aid
+    // Ensure the basic title and metadata always render (defensive)
+    const safeServiceName = (service.name && service.name.trim()) ? service.name : (service.type ? `${service.type} Service` : 'Service Details');
+    document.getElementById("serviceName").textContent = safeServiceName;
+    document.getElementById("serviceLoc").textContent = service.location || '';
+    document.getElementById("servicePrice").textContent = (service.price_per_day !== null && service.price_per_day !== undefined) ? service.price_per_day : '';
+    document.getElementById("serviceDesc").textContent = service.description || "";
+    document.getElementById("serviceCapacity").textContent = (service.capacity === null || service.capacity === undefined) ? "Not specified" : service.capacity;
+
+    // Show exact/geocoded information if present
+    const exactEl = document.getElementById('serviceExact');
+    if (exactEl) {
+        // Prefer the short friendly geocoded name but keep the full name on hover
+        if (service.geocoded_short || service.geocoded_name) {
+            const short = service.geocoded_short || service.geocoded_name;
+            const full = service.geocoded_name || '';
+            exactEl.innerHTML = 'Exact: ' + `<span title="${full}">${short}</span>`;
+        } else if (service.latitude != null && service.longitude != null) {
+            exactEl.textContent = `Coordinates: ${Number(service.latitude).toFixed(5)}, ${Number(service.longitude).toFixed(5)}`;
+        } else {
+            exactEl.textContent = '';
+        }
+    }
+
+    // Debugging helper: if the name is missing, show a small dev hint with returned keys
+    if (!service.name || !service.name.trim()) {
+        const dbg = document.createElement('div');
+        dbg.style.marginTop = '0.6rem';
+        dbg.style.color = '#a00';
+        dbg.style.fontSize = '0.9rem';
+        dbg.textContent = `Debug: serviceId=${serviceId} — returned keys: ${Object.keys(service).join(', ')}`;
+        list.parentNode.insertBefore(dbg, list);
+    } 
+
+    const list = document.getElementById("servicesList");
+    list.innerHTML = "";
+
+    if (service.services_provided?.length) {
+        service.services_provided.forEach(s => {
+            const div = document.createElement("div");
+            div.className = "service-item";
+            div.textContent = "✓ " + s;
+            list.appendChild(div);
+        });
+    } else {
+        list.innerHTML = "<p>No additional services listed.</p>";
+    }
+
+    // Provider card: show minimal link first and then try to load full provider summary
+    const providerCard = document.getElementById('providerCard');
+    providerCard.innerHTML = '';
+
+    if (service.provider_id) {
+        // Minimal link so the owner can always click through
+        providerCard.innerHTML = `<p><strong>Provider:</strong> <a href="/provider?id=${service.provider_id}">View provider profile</a> <span id="providerCardStatus" style="color:#888; margin-left:6px;">(loading...)</span></p>`;
+
+        // Load provider details (don't let errors break the page)
+        fetch(`/providers/${service.provider_id}`).then(async r => {
+            if (!r.ok) {
+                console.warn('Provider fetch failed', r.status, await r.text().catch(() => '(no body)'));
+                return null;
+            }
+            return r.json();
+        }).then(provider => {
+            if (!provider) {
+                const status = document.getElementById('providerCardStatus');
+                if (status) status.textContent = '(profile unavailable)';
+                return;
+            }
+
+            // Build a safe provider card inside the placeholder
+            try {
+                providerCard.innerHTML = `
+                  <div style="display:flex; gap:1rem; align-items:center;">
+                    <div id="providerPhotoWrap" style="width:80px; height:80px; border-radius:8px; overflow:hidden; background:#f0f0f0;"></div>
+                    <div>
+                      <div><strong>Provider:</strong> <a id="providerLink" href="/provider?id=${provider.id}">${provider.name}</a> ${provider.average_rating ? ' — ⭐ ' + provider.average_rating.toFixed(1) : ''}</div>
+                      ${ provider.highlights ? `<div style="margin-top:6px;color:#777; font-size:0.9rem;">${provider.highlights}</div>` : '' }
+                      ${ provider.provided_services && provider.provided_services.length ? `<div style="margin-top:6px;color:#555; font-size:0.95rem;">Services: ${provider.provided_services.slice(0,4).join(' • ')}</div>` : '' }
+                      <div id="providerBio" style="margin-top:0.5rem; color:#555;">${provider.bio ? provider.bio.substring(0,180) : ''}</div>
+                      <div style="margin-top:0.5rem;"><a href="/provider?id=${provider.id}">See full profile</a></div>
+                    </div>
+                  </div>
+                  <div id="providerReviews" style="margin-top:1rem;"></div>
+                `;
+
+                if (provider.photo_url) {
+                    const photoWrap = providerCard.querySelector('#providerPhotoWrap');
+                    if (photoWrap) photoWrap.innerHTML = `<img src="${provider.photo_url}" style="width:100%; height:100%; object-fit:cover;">`;
+                }
+            } catch (e) {
+                console.error('Failed to render provider card', e);
+                const status = document.getElementById('providerCardStatus');
+                if (status) status.textContent = '(profile unavailable)';
+                return;
+            }
+
+            // load reviews list and render inside providerCard
+            function loadReviews() {
+                fetch(`/providers/${provider.id}/reviews`).then(r => r.ok ? r.json() : []).then(reviews => {
+                    const revWrap = providerCard.querySelector('#providerReviews');
+                    if (!revWrap) return;
+                    if (!reviews || !reviews.length) {
+                        revWrap.innerHTML = `<p>No reviews yet. <button id="addReviewBtn">Add a review</button></p>`;
+                    } else {
+                        let html = '<h3>Reviews</h3>' + reviews.map(rv => `\n                            <div style="border-top:1px solid #eee; padding:0.6rem 0;">\n                                <strong>⭐ ${rv.rating}</strong> - ${rv.comment || ''}\n                            </div>`).join('');
+                        html += '<div style="margin-top:0.6rem;"><button id="addReviewBtn">Add a review</button></div>';
+                        revWrap.innerHTML = html;
+                    }
+
+                    const btn = revWrap.querySelector('#addReviewBtn');
+                    if (btn) {
+                        // Hide 'Add review' if current user is the same provider
+                        const token = localStorage.getItem('access_token');
+                        if (token) {
+                            fetch('/me', { headers: { Authorization: 'Bearer ' + token } }).then(r => r.ok ? r.json() : null).then(who => {
+                                if (who && who.role === 'provider' && Number(who.id) === Number(provider.id)) {
+                                    // Providers cannot review their own profile; replace button with info
+                                    btn.style.display = 'none';
+                                    const info = document.createElement('div');
+                                    info.style.color = '#666';
+                                    info.style.fontSize = '0.95rem';
+                                    info.textContent = 'You cannot review your own profile.';
+                                    revWrap.appendChild(info);
+                                    return;
+                                }
+                                btn.addEventListener('click', showReviewForm);
+                            }).catch(() => { btn.addEventListener('click', showReviewForm); });
+                        } else {
+                            btn.addEventListener('click', showReviewForm);
+                        }
+                    }
+                }).catch(err => { console.error('Failed to load reviews', err); });
+            }
+
+            function showReviewForm() {
+                const revWrap = providerCard.querySelector('#providerReviews');
+                if (!revWrap) return;
+                if (revWrap.querySelector('#reviewForm')) return;
+                const formHtml = `
+                    <div id="reviewForm" style="margin-top:0.6rem;">
+                        <label>Rating</label>
+                        <select id="reviewRating">
+                            <option value="5">5</option>
+                            <option value="4">4</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+                        <label>Comment</label>
+                        <textarea id="reviewComment" rows="3" style="width:100%; margin-top:0.4rem;"></textarea>
+                        <div style="margin-top:0.6rem;"><button id="submitReviewBtn">Submit Review</button></div>
+                    </div>`;
+                revWrap.insertAdjacentHTML('beforeend', formHtml);
+                revWrap.querySelector('#submitReviewBtn').addEventListener('click', submitReview);
+            }
+
+            async function submitReview() {
+                const token = localStorage.getItem('access_token');
+                if (!token) { alert('You must be logged in as an owner to leave a review'); return; }
+
+                const rating = Number(providerCard.querySelector('#reviewRating').value);
+                const comment = providerCard.querySelector('#reviewComment').value.trim() || null;
+
+                try {
+                    const res = await fetch(`/providers/${provider.id}/reviews`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+                        body: JSON.stringify({ rating, comment })
+                    });
+
+                    if (!res.ok) {
+                        const err = await res.json().catch(() => ({}));
+                        alert('Failed to post review: ' + (err.message || res.statusText));
+                        return;
+                    }
+
+                    alert('✅ Review posted!');
+                    // refresh reviews and provider rating display
+                    loadReviews();
+                    fetch(`/providers/${provider.id}`).then(r => r.ok ? r.json() : null).then(p => {
+                        const link = providerCard.querySelector('#providerLink');
+                        if (p && p.average_rating && link) link.innerHTML = `${p.name} — ⭐ ${p.average_rating.toFixed(1)}`;
+                    }).catch(()=>{});
+
+                } catch (err) {
+                    alert('Network error');
+                }
+            }
+
+            loadReviews();
+        }).catch(err => {
+            console.error('Failed to fetch provider', err);
+            const status = document.getElementById('providerCardStatus');
+            if (status) status.textContent = '(profile unavailable)';
+        });
+    }
+
+    /* Duplicate review helpers removed — review UI is handled inside the provider fetch scope. */
+
+}).catch(err => {
+    console.error('Failed to load service', err);
+    document.getElementById('serviceName').textContent = 'Service not found';
+    document.getElementById('servicePrice').textContent = '';
+    availabilityMsg.textContent = 'Could not load service details';
+    reserveBtn.disabled = true;
+    // ensure provider card shows a friendly fallback
+    const providerCard = document.getElementById('providerCard');
+    providerCard.innerHTML = `<p><a href="/find-care">Return to search</a></p>`;
+});
+/* -----------------------------
+   LOAD OWNER PETS
+----------------------------- */
+const _petToken = localStorage.getItem('access_token');
+
+// If not logged in, show a clear login CTA for pets
+if (!_petToken) {
+    petSelect.innerHTML = "<option value=''>Log in to select a pet</option>";
+    const loginNote = document.createElement('div');
+    loginNote.style.marginTop = '0.5rem';
+    loginNote.innerHTML = `Please <a href="/login">log in</a> to select a pet.`;
+    petSelect.parentNode.insertBefore(loginNote, petSelect.nextSibling);
+    reserveBtn.disabled = true;
+} else {
+    fetch("/pets", { headers: { Authorization: "Bearer " + _petToken } })
+    .then(res => res.ok ? res.json() : [])
+    .then(pets => {
+        petSelect.innerHTML = "";
+
+        if (!pets.length) {
+            petSelect.innerHTML = "<option value=''>No pets found</option>";
+            // show a small create link so users can add a pet quickly
+            const createNote = document.createElement('div');
+            createNote.style.marginTop = '0.5rem';
+            createNote.innerHTML = `No pets found. <a href="/create-pet">Create a pet</a>`;
+            petSelect.parentNode.insertBefore(createNote, petSelect.nextSibling);
+            reserveBtn.disabled = true;
+            return;
+        }
+
+        petSelect.innerHTML = "<option value=''>Select your pet</option>";
+        pets.forEach(p => {
+            const opt = document.createElement("option");
+            opt.value = p.id;
+            opt.textContent = p.name;
+            petSelect.appendChild(opt);
+        });
+
+        // require explicit selection before enabling reserve
+        reserveBtn.disabled = true;
+    });
+}
+
+/* -----------------------------
+   ENABLE BUTTON / CHECK AVAILABILITY
+----------------------------- */
+async function checkAvailability() {
+    availabilityMsg.textContent = "";
+
+    if (!startDate.value || !endDate.value) {
+        availabilityMsg.textContent = "Please select a start and end date.";
+        reserveBtn.disabled = true;
+        return false;
+    }
+
+    const qs = `?start_date=${encodeURIComponent(startDate.value)}&end_date=${encodeURIComponent(endDate.value)}`;
+    try {
+        const res = await fetch(`/services/${serviceId}/availability${qs}`);
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            availabilityMsg.textContent = "❌ " + (err.message || res.statusText);
+            reserveBtn.disabled = true;
+            return false;
+        }
+
+        const info = await res.json();
+
+        if (info.available === false) {
+            // Not available or capacity undefined
+            availabilityMsg.textContent = "❌ " + (info.message || "Not available for selected dates.");
+            reserveBtn.disabled = true;
+            return false;
+        }
+
+        // available may be count or boolean true
+        if (typeof info.available === 'number') {
+            if (info.available <= 0) {
+                availabilityMsg.textContent = "❌ No spots available for selected dates.";
+                reserveBtn.disabled = true;
+                return false;
+            }
+            availabilityMsg.textContent = `✅ ${info.available} spot(s) available`;
+        } else {
+            availabilityMsg.textContent = "✅ Available";
+        }
+
+        reserveBtn.disabled = !petSelect.value;
+        return true;
+
+    } catch (err) {
+        console.error(err);
+        availabilityMsg.textContent = "❌ Could not check availability";
+        reserveBtn.disabled = true;
+        return false;
+    }
+}
+
+[startDate, endDate, petSelect].forEach(el => {
+    el.addEventListener("change", () => {
+        // Update button enabling and perform availability check
+        reserveBtn.disabled = !startDate.value || !endDate.value || !petSelect.value;
+        // run availability check (fire & forget)
+        checkAvailability();
+    });
+});
+
+/* -----------------------------
+   CREATE RESERVATION (with availability check)
+----------------------------- */
+reserveBtn.addEventListener("click", async () => {
+    availabilityMsg.textContent = "Checking availability...";
+    reserveBtn.disabled = true;
+
+    const ok = await checkAvailability();
+    if (!ok) {
+        return;
+    }
+
+    fetch("/reservations", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("access_token")
+        },
+        body: JSON.stringify({
+            service_id: Number(serviceId),
+            pet_id: Number(petSelect.value),
+            start_date: startDate.value,
+            end_date: endDate.value
+        })
+    })
+    .then(res => {
+        if (!res.ok) return res.json().then(e => { throw e });
+        return res.json();
+    })
+    .then(() => {
+        availabilityMsg.textContent = "✅ Reservation confirmed!";
+    })
+    .catch(err => {
+        availabilityMsg.textContent = "❌ " + (err.message || "Failed");
+        reserveBtn.disabled = false;
+    });
+});
+</script>
+<script src="/static/js/user_menu.js"></script>
+
 </body>
 </html>

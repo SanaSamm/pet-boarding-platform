@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Pets - SafePaws</title>
+<link rel="stylesheet" href="/static/css/style.css">
+
+<style>
+body {
+  font-family: system-ui, sans-serif;
+  background: #f9f9f9;
+  padding: 2rem;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.05);
+}
+
+.pet {
+  padding: .8rem;
+  border-bottom: 1px solid #eee;
+}
+
+label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  padding: .6rem;
+  margin-top: .3rem;
+}
+
+button {
+  margin-top: 1rem;
+  width: 100%;
+  padding: .8rem;
+  background: #f39c12;
+  color: white;
+  border: none;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#msg {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>My Pets</h1>
+
+  <div id="petsList"></div>
+
+  <hr>
+
+  <div class="card card-soft">
+    <h2>Add a new pet</h2>
+
+    <label>Name</label>
+    <input id="petName">
+
+    <label>Type</label>
+    <input id="petType">
+
+    <label>Age</label>
+    <input id="petAge" type="number" min="0">
+
+    <button id="addPetBtn" class="btn-primary">Add Pet</button>
+
+    <div style="margin-top:1rem;">
+      <button id="backHomeBtn" class="back-button" type="button">Back to Home</button>
+    </div>
+
+    <p id="msg"></p>
+  </div>
+
+  <script>
+  document.getElementById('backHomeBtn').addEventListener('click', () => { window.location.href = '/'; });
+  </script>
+</div>
+
+<script>
+/* ==========================
+   DOM ELEMENTS
+========================== */
+const petsList = document.getElementById("petsList");
+const msg = document.getElementById("msg");
+const petName = document.getElementById("petName");
+const petType = document.getElementById("petType");
+const petAge = document.getElementById("petAge");
+
+/* ==========================
+   LOAD PETS (SAFE)
+========================== */
+async function loadPets() {
+  const token = localStorage.getItem("access_token");
+
+  if (!token) {
+    window.location.href = "/login";
+    return;
+  }
+
+  const res = await fetch("/pets", {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`
+    }
+  });
+
+  if (!res.ok) {
+    petsList.innerHTML = "<p>❌ Failed to load pets</p>";
+    return;
+  }
+
+  const pets = await res.json();
+  petsList.innerHTML = "";
+
+  if (!pets.length) {
+    petsList.innerHTML = `
+      <div style="display:flex; gap:1rem; align-items:center; background:#fffaf0; padding:1rem; border-radius:12px; border:1px solid #f1e2c4;">
+        <img id="noPetsImg" data-random-pet src="/static/images/boarding-2.jpg" alt="Pet" style="width:96px; height:96px; border-radius:12px; object-fit:cover;">
+        <div>
+          <p style="margin:0; font-weight:600;">No pets yet.</p>
+          <p style="margin:0.4rem 0 0; color:#666;">Add your first pet to start booking care.</p>
+        </div>
+      </div>
+    `;
+    if (window.loadRandomPetImage) {
+      window.loadRandomPetImage(document.getElementById('noPetsImg'));
+    }
+    return;
+  }
+
+  pets.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "pet";
+    div.textContent = `🐾 ${p.name} (${p.type}, ${p.age} yrs)`;
+    petsList.appendChild(div);
+  });
+}
+
+/* ==========================
+   ADD PET
+========================== */
+document.getElementById("addPetBtn").addEventListener("click", async () => {
+  msg.textContent = "";
+
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    msg.textContent = "❌ Please login again";
+    return;
+  }
+
+  const name = petName.value.trim();
+  const type = petType.value.trim();
+  const age = Number(petAge.value);
+
+  if (!name || !type || age < 0) {
+    msg.textContent = "❌ Fill all fields correctly";
+    return;
+  }
+
+  const res = await fetch("/pets", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name, type, age: Number(age) })
+  });
+
+  if (!res.ok) {
+    // try to parse server validation error details
+    let errBody = {};
+    try { errBody = await res.json(); } catch (e) { /* ignore */ }
+    const detail = errBody.message || errBody.messages || JSON.stringify(errBody) || res.statusText;
+    msg.textContent = "❌ Failed to add pet: " + detail;
+    return;
+  }
+
+  msg.textContent = "✅ Pet added!";
+  petName.value = "";
+  petType.value = "";
+  petAge.value = "";
+
+  loadPets();
+});
+
+/* ==========================
+   INIT
+========================== */
+loadPets();
+</script>
+
+<script src="/static/js/pet_images.js"></script>
+
+</body>
+</html>
+

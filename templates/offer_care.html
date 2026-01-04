@@ -1,101 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Offer Care - Paw Partner Tunisia</title>
-    <style>
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f9f9f9; }
-        header { background: #fff; border-bottom: 1px solid #eee; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 1.5rem; font-weight: bold; color: #f39c12; text-decoration: none; }
-        nav a { margin-left: 1.5rem; text-decoration: none; color: #333; font-weight: 500; }
-        
-        .content { padding: 4rem 2rem; max-width: 1000px; margin: 0 auto; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
-        
-        .benefits h1 { color: #2c3e50; font-size: 2.5rem; margin-bottom: 1.5rem; }
-        .benefits p { font-size: 1.1rem; line-height: 1.6; color: #666; margin-bottom: 2rem; }
-        .benefit-item { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
-        .benefit-icon { background: #fef5e7; color: #f39c12; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: bold; }
-        
-        .form-card { background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        .form-card h2 { margin-top: 0; color: #2c3e50; margin-bottom: 1.5rem; }
-        .form-group { margin-bottom: 1.2rem; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #444; font-size: 0.9rem; }
-        .form-group input { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
-        
-        .btn-primary { background: #f39c12; color: white; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: bold; border: none; width: 100%; cursor: pointer; font-size: 1rem; display: block; text-align: center; margin-top: 1rem; transition: background 0.2s; }
-        .btn-primary:hover { background: #e67e22; }
-        
-        @media (max-width: 768px) {
-            .grid { grid-template-columns: 1fr; gap: 2rem; }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <a href="/" class="logo-container" style="display: flex; align-items: center; gap: 0.8rem; text-decoration: none;">
-            <img src="/static/images/logo.png" alt="SafePaws Logo" style="width: 40px; height: 40px; border-radius: 8px;">
-            <span class="logo-text" style="font-size: 1.5rem; font-weight: bold; color: #f39c12;">SafePaws</span>
-        </a>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/find-care">Find Care</a>
-            <a href="/offer-care">Offer Care</a>
-            <a href="/login">Login</a>
-            <a href="/register">Register</a>
-        </nav>
-    </header>
-    <div class="content">
-        <div class="grid">
-            <div class="benefits">
-                <h1>Turn your love for pets into a business.</h1>
-                <p>Join Tunisia's leading pet boarding community. Whether you're a professional facility or a passionate individual, we help you connect with pet owners.</p>
-                
-                <div class="benefit-item">
-                    <div class="benefit-icon">✓</div>
-                    <div>
-                        <strong>Earn Extra Income</strong>
-                        <div style="color: #888; font-size: 0.9rem;">Set your own rates and get paid securely.</div>
-                    </div>
-                </div>
-                <div class="benefit-item">
-                    <div class="benefit-icon">✓</div>
-                    <div>
-                        <strong>Full Flexibility</strong>
-                        <div style="color: #888; font-size: 0.9rem;">Manage your availability and accept the pets you love.</div>
-                    </div>
-                </div>
-                <div class="benefit-item">
-                    <div class="benefit-icon">✓</div>
-                    <div>
-                        <strong>Verified Community</strong>
-                        <div style="color: #888; font-size: 0.9rem;">Connect with trusted pet owners near you.</div>
-                    </div>
-                </div>
-            </div>
+  <meta charset="UTF-8" />
+  <title>Offer Care – SafePaws</title>
 
-            <div class="form-card">
-                <h2>Create or Manage My Service</h2>
-                <div class="form-group">
-                    <label>Service Name</label>
-                    <input type="text" placeholder="e.g. Luxury Dog Suite">
-                </div>
-                <div class="form-group">
-                    <label>Location (City)</label>
-                    <input type="text" placeholder="e.g. Tunis, La Marsa">
-                </div>
-                <div class="form-group">
-                    <label>Price per Day (TND)</label>
-                    <input type="number" placeholder="45">
-                </div>
-                <div class="form-group">
-                    <label>Capacity (Number of Pets)</label>
-                    <input type="number" placeholder="5">
-                </div>
-                <button class="btn-primary">Save Service Details</button>
-            </div>
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial;
+      background: #f9f9f9;
+      padding: 40px;
+    }
+
+    .card {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: #2c3e50;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 0.7rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* ✅ Services Provided styling */
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: normal;
+    }
+
+    .checkbox-group input {
+      width: auto;
+    }
+
+    button {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 8px;
+      background: #f39c12;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    button:hover {
+      background: #e67e22;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card card-soft">
+    <h1>Create a Service</h1>
+
+    <form id="service-form">
+
+      <div class="form-group">
+        <label for="title">Service Name</label>
+        <input type="text" name="title" id="title" required />
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea name="description" id="description" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Location</label>
+        <input type="text" name="location" id="location" required />
+      </div>
+
+      <div class="form-group">
+        <label><input type="checkbox" id="detectExact"> Add my exact location (detect)</label>
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
+        <input type="hidden" name="geocoded_name" id="geocoded_name">
+        <input type="hidden" name="geocoded_short" id="geocoded_short">
+        <div id="exactLocationInfo" style="font-size:0.9rem; color:#555; margin-top:0.4rem;"></div> 
+      </div>
+
+      <div class="form-group">
+        <label for="price_per_day">Price per Day (TND)</label>
+        <input type="number" name="price_per_day" id="price_per_day" required />
+      </div>
+
+      <div class="form-group">
+        <label for="capacity">Capacity (number of pets)</label>
+        <input type="number" name="capacity" id="capacity" min="1" required />
+      </div>
+
+      <hr style="margin:1rem 0; border:none; border-top:1px solid #eee;">
+      <h3>Your Provider Profile (optional)</h3>
+
+      <div class="form-group">
+        <label for="bio">Short Bio</label>
+        <textarea name="bio" id="bio" rows="3" placeholder="Tell pet owners about your care style and experience"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="photo_url">Profile Photo URL</label>
+        <input type="url" name="photo_url" id="photo_url" placeholder="https://example.com/your-photo.jpg">
+      </div> 
+
+      <div class="form-group">
+        <label for="type">Service Type</label>
+        <select name="type" id="type" required>
+          <option value="boarding">Boarding</option>
+          <option value="daycare">Day Care</option>
+        </select>
+      </div>
+
+      <!-- ✅ NEW: Services Provided -->
+      <div class="form-group">
+        <label>Services Provided</label>
+
+        <div class="checkbox-group">
+          <label>
+            <input type="checkbox" name="services_provided" value="Grooming">
+            Grooming
+          </label>
+
+          <label>
+            <input type="checkbox" name="services_provided" value="Daily Walks">
+            Daily Walks
+          </label>
+
+          <label>
+            <input type="checkbox" name="services_provided" value="24/7 Supervision">
+            24/7 Supervision
+          </label>
+
+          <label>
+            <input type="checkbox" name="services_provided" value="Vet Access">
+            Veterinary Access
+          </label>
+
+          <label>
+            <input type="checkbox" name="services_provided" value="Shower & Spa">
+            Shower & Spa
+          </label>
         </div>
+      </div>
+
+      <button type="submit" class="btn-primary">Save Service</button>
+    </form>
+
+    <div style="text-align:center; margin-top: 1rem;">
+      <button id="viewProfileBtn" type="button" class="btn-secondary" style="display:none; margin-right: 0.5rem;">View / Edit Profile</button>
+      <button id="backHomeBtn" type="button" class="back-button" style="display:none;">Back to Home</button>
     </div>
+  </div>
+
+  <!-- JS already adapted earlier -->
+  <script src="/static/js/offer_care.js"></script>
+
 </body>
 </html>
+
+
+

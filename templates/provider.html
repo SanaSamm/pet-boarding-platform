@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Provider Profile - SafePaws</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<style>
+.provider-card { max-width:900px; margin: 3rem auto; padding:1.6rem; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.04); background: #fffaf0; }
+.provider-header { display:flex; gap:1rem; align-items:center; }
+.provider-photo { width:96px; height:96px; border-radius:12px; background:#eee; overflow:hidden; }
+.provider-photo img { width:100%; height:100%; object-fit:cover; }
+.service-list { margin-top:1rem; }
+.review { border-top:1px solid #eee; padding:0.8rem 0; }
+</style>
+</head>
+<body>
+<header>
+    <a href="/" class="logo-container">
+        <img src="/static/images/logo.png" class="logo-img">
+        <span class="logo-text">SafePaws</span>
+    </a>
+    <nav class="header-actions">
+        <a href="/messages">Messages</a>
+        <a href="/login" id="loginLink">Login</a>
+        <div id="userMenu" class="user-menu"></div>
+    </nav>
+</header>
+
+<div class="provider-card">
+    <div class="provider-header">
+        <div class="provider-photo" id="photoWrap"> </div>
+        <div>
+            <h1 id="providerName"></h1>
+            <p id="providerRating"></p>
+            <p id="providerHighlights" style="color:#555;"></p>
+            <p id="providerBio"></p>
+            <div id="providedServicesWrap" style="margin-top:0.6rem;"></div>
+            <a id="contactProvider" class="btn-primary" href="#" style="display:none;">Contact Provider</a>
+        </div>
+    </div>
+
+    <h3>Services</h3>
+    <div id="servicesList" class="service-list"></div>
+
+    <h3>Reviews</h3>
+    <div id="reviewsList"></div>
+
+    <div id="reviewFormWrap" style="margin-top:1rem;">
+        <h4>Leave a review</h4>
+        <label>Rating (1-5)</label>
+        <input type="number" id="reviewRating" min="1" max="5" value="5">
+        <label>Comment</label>
+        <textarea id="reviewComment"></textarea>
+        <button id="submitReviewBtn" class="btn-primary">Submit Review</button>
+    </div>
+
+    <!-- Edit profile (providers only) -->
+    <div id="editProfileWrap" style="margin-top:1rem; display:none;">
+        <h4>Edit profile</h4>
+        <label>Bio</label>
+        <textarea id="editBio" rows="4"></textarea>
+        <label>Photo URL</label>
+        <input type="text" id="editPhoto" placeholder="https://...">
+        <label>Services offered (comma separated)</label>
+        <input type="text" id="editServices" placeholder="Grooming, Daycare, Grooming">
+        <div style="margin-top:0.6rem;">
+            <button id="saveProfileBtn" class="btn-primary">Save Profile</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const providerId = params.get('id');
+
+async function loadProvider() {
+    const res = await fetch(`/providers/${providerId}`);
+    if (!res.ok) { alert('Provider not found'); return; }
+    const p = await res.json();
+
+    document.getElementById('providerName').textContent = p.name;
+    document.getElementById('providerRating').textContent = p.average_rating ? `⭐ ${p.average_rating.toFixed(1)} avg` : '';
+    document.getElementById('providerHighlights').textContent = p.highlights || '';
+    document.getElementById('providerBio').textContent = p.bio || '';
+
+    const photoWrap = document.getElementById('photoWrap');
+    if (p.photo_url) {
+        photoWrap.innerHTML = `<img src="${p.photo_url}">`;
+    } else {
+        photoWrap.innerHTML = `<img id="providerFallbackImg" data-random-pet src="/static/images/boarding-1.jpg" alt="Pet photo">`;
+        if (window.loadRandomPetImage) {
+            window.loadRandomPetImage(document.getElementById('providerFallbackImg'));
+        }
+    }
+
+    // Render provided services (aggregated) prominently
+    const providedWrap = document.getElementById('providedServicesWrap');
+    providedWrap.innerHTML = '';
+    if (p.provided_services && p.provided_services.length) {
+        const items = p.provided_services.map(x => `<span style="display:inline-block; background:#fff; border:1px solid #eee; padding:6px 8px; margin-right:6px; border-radius:8px; font-size:0.95rem;">${x}</span>`).join(' ');
+        providedWrap.innerHTML = `<strong>Provided services:</strong> ${items}`;
+    }
+
+    const services = document.getElementById('servicesList');
+    services.innerHTML = '';
+    if (!p.services || !p.services.length) {
+        services.innerHTML = '<p>No services listed.</p>';
+    } else {
+        p.services.forEach(s => {
+            // Defensive: ensure object looks like a service
+            if (!s || !s.id) return;
+            const div = document.createElement('div');
+            div.dataset.serviceId = s.id;
+            div.className = 'provider-service-item';
+            div.innerHTML = `<a href="/service-details?id=${s.id}">${s.name}</a> — ${s.price_per_day || '—'} TND <span class="service-actions" style="margin-left:8px;"></span>`;
+            services.appendChild(div);
+        });
+    }
+
+    loadReviews();
+    // reveal edit UI or contact button based on /me
+    try { await showEditIfOwner(p); await showContactIfOwner(p); } catch(e) { /* ignore */ }
+}
+
+// Show contact button to owners visiting provider page
+async function showContactIfOwner(p){
+    const token = localStorage.getItem('access_token');
+    const btn = document.getElementById('contactProvider');
+    if (!token) { btn.style.display = 'none'; return; }
+
+    try {
+        const res = await fetch('/me', { headers: { Authorization: 'Bearer ' + token } });
+        if (!res.ok) { btn.style.display = 'none'; return; }
+        const who = await res.json();
+        if (who.role === 'owner'){
+            btn.style.display = 'inline-block';
+            btn.addEventListener('click', async () => {
+                btn.disabled = true;
+                try {
+                    const r = await fetch('/conversations', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+                        body: JSON.stringify({ provider_id: Number(providerId) })
+                    });
+                    if (!r.ok){ const e = await r.json().catch(()=>{}); alert('Failed to start conversation: ' + (e.message||JSON.stringify(e))); return; }
+                    const convo = await r.json();
+                    // open messages page with conversation
+                    window.location.href = `/messages?open=${convo.id}`;
+                } finally { btn.disabled = false; }
+            });
+        } else {
+            btn.style.display = 'none';
+        }
+    } catch(e){ btn.style.display = 'none'; }
+}
+
+async function loadReviews() {
+    const res = await fetch(`/providers/${providerId}/reviews`);
+    const list = document.getElementById('reviewsList');
+    list.innerHTML = '';
+    if (!res.ok) { list.textContent = 'No reviews'; return; }
+    const reviews = await res.json();
+    if (!reviews.length) { list.innerHTML = '<p>No reviews yet</p>'; return; }
+    reviews.forEach(r => {
+        const div = document.createElement('div');
+        div.className = 'review';
+        const reviewer = r.reviewer_name ? `<em>by ${r.reviewer_name}</em>` : '';
+        div.innerHTML = `<strong>Rating: ${r.rating}</strong> ${reviewer}<p>${r.comment || ''}</p><small>${new Date(r.created_at).toLocaleString()}</small>`;
+        list.appendChild(div);
+    });
+}
+
+// Submit review (owners only)
+document.getElementById('submitReviewBtn').addEventListener('click', async () => {
+    const token = localStorage.getItem('access_token');
+    if (!token) { alert('Please login to leave a review'); return; }
+    const body = {
+        rating: Number(document.getElementById('reviewRating').value),
+        comment: document.getElementById('reviewComment').value.trim()
+    };
+    const res = await fetch(`/providers/${providerId}/reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify(body)
+    });
+    if (!res.ok) { const e = await res.json().catch(()=>{}); alert('Failed: ' + (e.message||JSON.stringify(e))); return; }
+    alert('Review submitted');
+    loadReviews();
+});
+
+// Allow providers to delete their services
+function enableServiceDeleteControls(){
+    const token = localStorage.getItem('access_token');
+    if (!token) return; // only available to logged in providers
+
+    const items = document.querySelectorAll('.provider-service-item');
+    items.forEach(it => {
+        const id = it.dataset.serviceId;
+        const actions = it.querySelector('.service-actions');
+        if (!actions) return;
+        // avoid adding multiple buttons
+        if (actions._init) return;
+        actions._init = true;
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'Delete';
+        delBtn.style.background = '#e74c3c';
+        delBtn.style.color = 'white';
+        delBtn.style.border = 'none';
+        delBtn.style.padding = '4px 8px';
+        delBtn.style.borderRadius = '6px';
+        delBtn.style.marginLeft = '6px';
+        delBtn.addEventListener('click', async () => {
+            if (!confirm('Delete this service? This cannot be undone.')) return;
+            delBtn.disabled = true;
+            try {
+                const res = await fetch(`/services/${id}`, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } });
+                if (!res.ok) { const e = await res.json().catch(()=>{}); alert('Failed to delete: ' + (e.message || JSON.stringify(e))); delBtn.disabled = false; return; }
+                // remove element from DOM
+                it.remove();
+                alert('Service deleted');
+            } catch (err) {
+                console.error(err);
+                alert('Network error deleting service');
+                delBtn.disabled = false;
+            }
+        });
+
+        actions.appendChild(delBtn);
+    });
+}
+
+// Show edit UI & save profile (providers only)
+async function showEditIfOwner(p) {
+    const token = localStorage.getItem('access_token');
+    if (!token) return;
+
+    try {
+        const res = await fetch('/me', { headers: { Authorization: 'Bearer ' + token } });
+        if (!res.ok) return;
+        const who = await res.json();
+        if (who.role === 'provider' && Number(who.id) === Number(providerId)) {
+            // Hide review form when providers view their own profile
+            const revWrap = document.getElementById('reviewFormWrap');
+            if (revWrap) revWrap.style.display = 'none';
+
+            document.getElementById('editProfileWrap').style.display = 'block';
+            document.getElementById('editBio').value = p.bio || '';
+            document.getElementById('editPhoto').value = p.photo_url || '';
+            document.getElementById('editServices').value = (p.provided_services || []).join(', ');
+
+            const saveBtn = document.getElementById('saveProfileBtn');
+            if (saveBtn._listening) return; // avoid duplicate listeners
+            saveBtn._listening = true;
+
+            saveBtn.addEventListener('click', async () => {
+                const token = localStorage.getItem('access_token');
+                if (!token) { alert('Please login as provider'); return; }
+                const servicesInput = document.getElementById('editServices').value.trim();
+            const servicesArr = servicesInput ? servicesInput.split(',').map(s => s.trim()).filter(Boolean) : null;
+
+            const body = {
+                    bio: document.getElementById('editBio').value.trim() || null,
+                    photo_url: document.getElementById('editPhoto').value.trim() || null,
+                    services_offered: servicesArr
+                };
+
+                const res = await fetch(`/providers/${providerId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify(body)
+                });
+
+                if (!res.ok) { const e = await res.json().catch(()=>{}); alert('Failed to save: ' + (e.message||JSON.stringify(e))); return; }
+                alert('Profile updated');
+                await loadProvider();
+                // Re-enable delete controls on the refreshed list
+                enableServiceDeleteControls();
+            });
+        } else {
+            // Ensure review form is visible for other users (owners and other providers)
+            const revWrap = document.getElementById('reviewFormWrap');
+            if (revWrap) revWrap.style.display = 'block';
+        }
+    } catch(e) { /* ignore */ }
+}
+
+// load page
+loadProvider();
+</script>
+<script src="/static/js/user_menu.js"></script>
+<script src="/static/js/pet_images.js"></script>
+</body>
+</html>

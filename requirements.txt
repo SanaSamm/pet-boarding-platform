@@ -24,3 +24,4 @@ python-dotenv
 sqlalchemy
 werkzeug
 gunicorn
+requests

@@ -8,11 +8,13 @@ services blueprint.
 """
 
 from datetime import datetime
+import os
+import requests
 
 from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 from db import db
 from models.reservation import ReservationModel
@@ -26,6 +28,18 @@ blp = Blueprint(
     "Reservations", __name__, description="Operations on reservations (owner-only)"
 )
 
+def _send_telegram(message):
+    token = os.getenv("TELEGRAM_BOT_TOKEN")
+    chat_id = os.getenv("TELEGRAM_CHAT_ID")
+    if not token or not chat_id:
+        return
+    try:
+        url = f"https://api.telegram.org/bot{token}/sendMessage"
+        requests.post(url, json={"chat_id": chat_id, "text": message}, timeout=5)
+    except Exception:
+        # Notification is best-effort; ignore failures
+        pass
+
 
 @blp.route("/reservations")
 class ReservationsList(MethodView):
@@ -34,11 +48,12 @@ class ReservationsList(MethodView):
     @jwt_required()
     @blp.response(200, ReservationSchema(many=True))
     def get(self):
-        identity = get_jwt_identity()
-        if identity.get("role") != "owner":
+        owner_id = int(get_jwt_identity())
+        claims = get_jwt()
+        if claims.get("role") != "owner":
             abort(403, message="Only owners can view their reservations.")
 
-        owner = OwnerModel.query.get_or_404(identity["id"])
+        owner = OwnerModel.query.get_or_404(owner_id)
         # Gather reservations across all owner's pets
         reservations = []
         for pet in owner.pets:
@@ -49,13 +64,14 @@ class ReservationsList(MethodView):
     @blp.arguments(ReservationSchema)
     @blp.response(201, ReservationSchema)
     def post(self, reservation_data):
-        identity = get_jwt_identity()
-        if identity.get("role") != "owner":
+        owner_id = int(get_jwt_identity())
+        claims = get_jwt()
+        if claims.get("role") != "owner":
             abort(403, message="Only owners can create reservations.")
 
         # Validate pet ownership
         pet = PetModel.query.get_or_404(reservation_data["pet_id"])
-        if pet.owner_id != identity["id"]:
+        if pet.owner_id != owner_id:
             abort(403, message="You can only reserve services for your own pets.")
 
         # Validate service existence
@@ -83,6 +99,15 @@ class ReservationsList(MethodView):
         )
         db.session.add(reservation)
         db.session.commit()
+        owner = OwnerModel.query.get(owner_id)
+        msg = (
+            f"New reservation: {service.name}\n"
+            f"Owner: {owner.name if owner else owner_id}\n"
+            f"Pet ID: {pet.id}\n"
+            f"Dates: {reservation.start_date} to {reservation.end_date}\n"
+            f"Service ID: {service.id} (Provider {service.provider_id})"
+        )
+        _send_telegram(msg)
         return reservation
 
 
@@ -92,16 +117,24 @@ class ReservationResource(MethodView):
 
     @jwt_required()
     def delete(self, reservation_id):
-        identity = get_jwt_identity()
-        if identity.get("role") != "owner":
+        owner_id = int(get_jwt_identity())
+        claims = get_jwt()
+        if claims.get("role") != "owner":
             abort(403, message="Only owners can cancel reservations.")
 
         reservation = ReservationModel.query.get_or_404(reservation_id)
         # Ensure the reservation belongs to one of the owner's pets
         pet = PetModel.query.get(reservation.pet_id)
-        if pet.owner_id != identity["id"]:
+        if pet.owner_id != owner_id:
             abort(403, message="You do not have permission to cancel this reservation.")
 
         db.session.delete(reservation)
         db.session.commit()
+        owner = OwnerModel.query.get(owner_id)
+        msg = (
+            f"Reservation cancelled: {reservation_id}\n"
+            f"Owner: {owner.name if owner else owner_id}\n"
+            f"Service ID: {reservation.service_id}"
+        )
+        _send_telegram(msg)
         return {"message": "Reservation cancelled."}

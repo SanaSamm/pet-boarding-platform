@@ -18,8 +18,20 @@ class ProviderModel(db.Model):
     email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
+    # Optional profile fields
+    bio = db.Column(db.Text, nullable=True)
+    photo_url = db.Column(db.String(255), nullable=True)
+    # Aggregated list of service types this provider offers (e.g. ['Grooming','Daycare'])
+    services_offered = db.Column(db.JSON, nullable=True)
+
     # Relationship: one provider can offer many services
     services = db.relationship(
         "BoardingServiceModel", back_populates="provider", cascade="all, delete",
+        lazy="dynamic"
+    )
+
+    # Reviews left by owners
+    reviews = db.relationship(
+        "ReviewModel", back_populates="provider", cascade="all, delete",
         lazy="dynamic"
     )

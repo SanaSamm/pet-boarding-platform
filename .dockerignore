@@ -1,0 +1,11 @@
+.git
+.gitignore
+.local
+attached_assets
+instance
+venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.db

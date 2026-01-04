@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Messages</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <header>
+      <a href="/" class="logo-container">
+        <img src="/static/images/logo.png" class="logo-img">
+        <span class="logo-text">SafePaws</span>
+      </a>
+      <nav class="header-actions">
+        <a href="/find-care">Find Care</a>
+        <a href="/offer-care">Offer Care</a>
+        <a href="/login" id="loginLink">Login</a>
+        <div id="userMenu" class="user-menu"></div>
+      </nav>
+    </header>
+    <div class="container">
+      <h1 style="text-align:center; margin-top:1rem">Messages</h1>
+
+      <div class="chat-page">
+        <aside class="convo-list card-soft" id="conversations">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem">
+            <h3 style="margin:0">Conversations</h3>
+            <button class="back-button" id="newConvoBtn">New</button>
+          </div>
+          <div id="newConvoPanel" class="new-convo-panel" style="display:none">
+            <div id="newConvoStatus" class="new-convo-status"></div>
+            <div id="providerSearchWrap">
+              <input type="text" id="providerSearchInput" placeholder="Search providers by name" autocomplete="off" />
+              <div id="providerResults" class="provider-results"></div>
+            </div>
+          </div>
+          <div id="convoList">Loading…</div>
+        </aside>
+
+        <section class="thread" id="thread">
+          <h3 id="threadTitle">Select a conversation</h3>
+          <div class="messages-area" id="messagesArea">Start a conversation to see messages here.</div>
+
+          <form id="sendMessageForm" class="message-input" style="display:none">
+            <input type="text" id="messageInput" placeholder="Write a message" autocomplete="off" />
+            <button type="submit">Send</button>
+          </form>
+        </section>
+      </div>
+    </div>
+
+    <script src="/static/js/messages.js"></script>
+    <script src="/static/js/user_menu.js"></script>
+  </body>
+</html>

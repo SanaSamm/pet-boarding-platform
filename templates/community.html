@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Community Chat</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <header>
+      <a href="/" class="logo-container">
+        <img src="/static/images/logo.png" class="logo-img">
+        <span class="logo-text">SafePaws</span>
+      </a>
+      <nav class="header-actions">
+        <a href="/messages">Messages</a>
+        <a href="/login" id="loginLink">Login</a>
+        <div id="userMenu" class="user-menu"></div>
+      </nav>
+    </header>
+    <div class="container">
+      <h1 style="text-align:center; margin-top:1rem">Pet Owners Community</h1>
+
+      <div class="card-soft" style="max-width:900px; margin:1.6rem auto; padding:0; overflow:hidden;">
+        <section class="thread" style="height: 64vh; display:flex; flex-direction:column; padding:0.8rem;">
+          <div class="messages-area" id="messagesArea">Loading…</div>
+
+          <form id="sendForm" class="message-input" style="margin-top:10px;">
+            <input type="text" id="messageInput" placeholder="Share with the community" autocomplete="off" />
+            <button type="submit">Send</button>
+          </form>
+        </section>
+      </div>
+    </div>
+
+    <script src="/static/js/community.js"></script>
+    <script src="/static/js/user_menu.js"></script>
+  </body>
+</html>
