@@ -18,3 +18,8 @@ class OwnerSchema(Schema):
         validate=validate.Length(min=6, max=200),
         metadata={"description": "Plain-text password; will be hashed internally"},
     )
+
+
+class OwnerListItemSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str()

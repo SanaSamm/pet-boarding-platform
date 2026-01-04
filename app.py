@@ -139,6 +139,7 @@ def create_app() -> Flask:
     # --------------------
     from resources.health import blp as HealthBlueprint
     from resources.auth import blp as AuthBlueprint
+    from resources.owners import blp as OwnersBlueprint
     from resources.pets import blp as PetsBlueprint
     from resources.services import blp as ServicesBlueprint
     from resources.reservations import blp as ReservationsBlueprint
@@ -149,6 +150,7 @@ def create_app() -> Flask:
 
     api.register_blueprint(HealthBlueprint)
     api.register_blueprint(AuthBlueprint)
+    api.register_blueprint(OwnersBlueprint)
     api.register_blueprint(PetsBlueprint)
     api.register_blueprint(ServicesBlueprint)
     api.register_blueprint(ReservationsBlueprint)

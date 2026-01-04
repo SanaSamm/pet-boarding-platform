@@ -208,7 +208,10 @@ function renderProviderResults(items){
 
     row.addEventListener('click', async ()=>{
       try{
-        const convo = await apiFetch('/conversations', {method:'POST', body: JSON.stringify({provider_id: Number(p.id)})});
+        const payload = (currentUser && currentUser.role === 'provider')
+          ? { owner_id: Number(p.id) }
+          : { provider_id: Number(p.id) };
+        const convo = await apiFetch('/conversations', {method:'POST', body: JSON.stringify(payload)});
         await loadConversations();
         await openConversation(convo.id);
         document.getElementById('newConvoPanel').style.display = 'none';
@@ -229,7 +232,8 @@ async function handleProviderSearch(query){
     return;
   }
   try{
-    const data = await apiFetch(`/providers?q=${encodeURIComponent(query)}`);
+    const endpoint = (currentUser && currentUser.role === 'provider') ? 'owners' : 'providers';
+    const data = await apiFetch(`/${endpoint}?q=${encodeURIComponent(query)}`);
     renderProviderResults(data);
   } catch (err){
     console.error(err);
@@ -252,6 +256,7 @@ document.getElementById('newConvoBtn').addEventListener('click', async ()=>{
   if (currentUser.role === 'owner'){
     status.textContent = 'Search providers to start a conversation.';
     searchInput.disabled = false;
+    searchInput.placeholder = 'Search providers by name';
     panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
     if (panel.style.display === 'block'){
       searchInput.focus();
@@ -260,13 +265,13 @@ document.getElementById('newConvoBtn').addEventListener('click', async ()=>{
   }
 
   if (currentUser.role === 'provider'){
-    const owner_id = prompt('Owner ID');
-    if (!owner_id) return;
-    try{
-      const convo = await apiFetch('/conversations', {method:'POST', body: JSON.stringify({owner_id: Number(owner_id)})});
-      await loadConversations();
-      await openConversation(convo.id);
-    } catch(err){ console.error(err); alert('Failed to create conversation'); }
+    status.textContent = 'Search owners to start a conversation.';
+    searchInput.disabled = false;
+    searchInput.placeholder = 'Search owners by name';
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    if (panel.style.display === 'block'){
+      searchInput.focus();
+    }
   }
 });
 
