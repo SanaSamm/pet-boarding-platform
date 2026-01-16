@@ -1,15 +1,15 @@
 <div class="card card-soft">
-  <h2>Add Pet</h2>
+  <h2 data-i18n="pets_create_title">Add Pet</h2>
 
   <form id="petForm">
-    <input placeholder="Pet name" id="name" required />
-    <input placeholder="Type (dog/cat)" id="type" required />
-    <input type="number" placeholder="Age" id="age" required />
-    <button class="btn-primary" type="submit">Add Pet</button>
+    <input placeholder="Pet name" data-i18n-placeholder="pets_create_name" id="name" required />
+    <input placeholder="Type (dog/cat)" data-i18n-placeholder="pets_create_type" id="type" required />
+    <input type="number" placeholder="Age" data-i18n-placeholder="pets_create_age" id="age" required />
+    <button class="btn-primary" type="submit" data-i18n="pets_create_submit">Add Pet</button>
   </form>
 
   <div style="margin-top:1rem;">
-    <button id="backHomeBtn" class="back-button" type="button">Back to Home</button>
+    <button id="backHomeBtn" class="back-button" type="button" data-i18n="common_back">Back to Home</button>
   </div>
 </div>
 
@@ -27,7 +27,7 @@ form.addEventListener("submit", async (e) => {
 
   const token = localStorage.getItem("access_token");
   if (!token) {
-    alert("Please login to add a pet.");
+    alert(window.I18N ? window.I18N.t("common_login_required") : "Please login to add a pet.");
     window.location.href = "/login";
     return;
   }
@@ -52,18 +52,19 @@ form.addEventListener("submit", async (e) => {
       let errBody = {};
       try { errBody = await res.json(); } catch(e) {}
       const detail = errBody.message || errBody.messages || JSON.stringify(errBody) || res.statusText;
-      alert("Failed to create pet: " + detail);
+      const msg = (window.I18N ? window.I18N.t("pets_create_failed") : "Failed to create pet") + ": " + detail;
+      alert(msg);
       return;
     }
 
-    alert("✅ Pet created!");
+    alert(window.I18N ? window.I18N.t("pets_create_success") : "Pet created!");
     form.reset();
     // redirect to my pets
     setTimeout(() => { window.location.href = "/my-pets"; }, 600);
 
   } catch (err) {
     console.error(err);
-    alert("Network error");
+    alert(window.I18N ? window.I18N.t("common_network_error") : "Network error");
   }
 });
 </script>
@@ -78,7 +79,7 @@ form.addEventListener("submit", async (e) => {
 
   const token = localStorage.getItem("access_token");
   if (!token) {
-    alert("Please login to add a pet.");
+    alert(window.I18N ? window.I18N.t("common_login_required") : "Please login to add a pet.");
     window.location.href = "/login";
     return;
   }
@@ -103,18 +104,21 @@ form.addEventListener("submit", async (e) => {
       let errBody = {};
       try { errBody = await res.json(); } catch(e) {}
       const detail = errBody.message || errBody.messages || JSON.stringify(errBody) || res.statusText;
-      alert("Failed to create pet: " + detail);
+      const msg = (window.I18N ? window.I18N.t("pets_create_failed") : "Failed to create pet") + ": " + detail;
+      alert(msg);
       return;
     }
 
-    alert("✅ Pet created!");
+    alert(window.I18N ? window.I18N.t("pets_create_success") : "Pet created!");
     form.reset();
     // redirect to my pets
     setTimeout(() => { window.location.href = "/my-pets"; }, 600);
 
   } catch (err) {
     console.error(err);
-    alert("Network error");
+    alert(window.I18N ? window.I18N.t("common_network_error") : "Network error");
   }
 });
 </script>
+
+<script src="/static/js/i18n.js"></script>

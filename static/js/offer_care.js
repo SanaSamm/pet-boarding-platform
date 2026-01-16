@@ -11,7 +11,7 @@ document.getElementById("service-form")
     // Validate capacity
     const capacity = Number(form.capacity.value);
     if (!Number.isInteger(capacity) || capacity < 1) {
-      alert("Capacity is required and must be an integer >= 1");
+      alert(t("offer_capacity_error", "Capacity is required and must be an integer >= 1"));
       return;
     }
 
@@ -24,13 +24,13 @@ document.getElementById("service-form")
       type: form.type.value,
       services_provided: servicesProvided,
       // geocoding (optional)
-      latitude: form.latitude && form.latitude.value ? Number(form.latitude.value) : null,
-      longitude: form.longitude && form.longitude.value ? Number(form.longitude.value) : null,
-      geocoded_name: form.geocoded_name && form.geocoded_name.value ? form.geocoded_name.value : null,
-      geocoded_short: form.geocoded_short && form.geocoded_short.value ? form.geocoded_short.value : null,
+      latitude: form.latitude && form.latitude.value ... Number(form.latitude.value) : null,
+      longitude: form.longitude && form.longitude.value ... Number(form.longitude.value) : null,
+      geocoded_name: form.geocoded_name && form.geocoded_name.value ... form.geocoded_name.value : null,
+      geocoded_short: form.geocoded_short && form.geocoded_short.value ... form.geocoded_short.value : null,
       // profile fields
-      bio: (form.bio && form.bio.value.trim()) ? form.bio.value.trim() : null,
-      photo_url: (form.photo_url && form.photo_url.value.trim()) ? form.photo_url.value.trim() : null
+      bio: (form.bio && form.bio.value.trim()) ... form.bio.value.trim() : null,
+      photo_url: (form.photo_url && form.photo_url.value.trim()) ... form.photo_url.value.trim() : null
     }; 
 
     try {
@@ -39,7 +39,7 @@ document.getElementById("service-form")
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(token ? { Authorization: 'Bearer ' + token } : {})
+          ...(token ... { Authorization: 'Bearer ' + token } : {})
         },
         body: JSON.stringify(payload)
       });
@@ -48,7 +48,7 @@ document.getElementById("service-form")
         let err = {};
         try { err = await res.json(); } catch(e) {}
         console.error("Backend error:", err);
-        alert("Error creating service: " + (err.message || JSON.stringify(err)));
+        alert(t("offer_create_failed", "Error creating service") + ": " + (err.message || JSON.stringify(err)));
         return;
       }
 
@@ -63,7 +63,7 @@ document.getElementById("service-form")
       const viewBtn = document.getElementById('viewProfileBtn');
       if (viewBtn) {
         viewBtn.style.display = 'inline-block';
-        viewBtn.onclick = () => window.location.href = `/provider?id=${created.provider_id}`;
+        viewBtn.onclick = () => window.location.href = `/provider...id=${created.provider_id}`;
       }
 
     } catch (error) {
@@ -95,7 +95,7 @@ if (detectCheck) {
     }
 
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser');
+      alert(t('offer_geo_unsupported', 'Geolocation is not supported by your browser'));
       e.target.checked = false;
       return;
     }
@@ -116,16 +116,16 @@ if (detectCheck) {
         if (document.getElementById('longitude')) document.getElementById('longitude').value = lng;
 
         try {
-          const resp = await fetch(`/geocode/reverse?lat=${lat}&lng=${lng}`);
+          const resp = await fetch(`/geocode/reverse...lat=${lat}&lng=${lng}`);
           if (resp.ok) {
             const j = await resp.json();
             // Store full display name for DB precision, but show concise display to the user
             const full = j.full_display_name || j.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
             const disp = j.display_name || full;
-            const short = j.display_name || (typeof full === 'string' ? full.split(',')[0] : full);
+            const short = j.display_name || (typeof full === 'string' ... full.split(',')[0] : full);
             if (document.getElementById('geocoded_name')) document.getElementById('geocoded_name').value = full;
             if (document.getElementById('geocoded_short')) document.getElementById('geocoded_short').value = short;
-            exactInfo.textContent = 'Exact: ' + disp; 
+            exactInfo.textContent = t('offer_geo_exact', 'Exact') + ': ' + disp; 
           } else {
             exactInfo.textContent = `Coordinates: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
           }
@@ -150,7 +150,7 @@ if (detectCheck) {
         return;
       } catch (err2) {
         console.error('High-accuracy attempt failed:', err2 && err2.message);
-        alert('Unable to retrieve your location: ' + (err2 && err2.message ? err2.message : 'error') + '. Please try again or enter your location manually.');
+        alert((t('offer_geo_failed', 'Unable to retrieve your location. Please try again or enter your location manually.') + (err2 && err2.message ... ' ' + err2.message : '')));
         e.target.checked = false;
         exactInfo.textContent = '';
         return;

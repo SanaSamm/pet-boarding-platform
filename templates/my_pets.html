@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>My Pets - SafePaws</title>
+<title data-i18n="title_pets">My Pets - SafePaws</title>
 <link rel="stylesheet" href="/static/css/style.css">
 
 <style>
@@ -58,30 +58,38 @@ button {
 </head>
 
 <body>
+<div class="lang-switcher auth-lang">
+  <label class="sr-only" data-i18n="lang_label">Language</label>
+  <select class="lang-switcher-select">
+    <option value="en">EN</option>
+    <option value="fr">FR</option>
+    <option value="ar">AR</option>
+  </select>
+</div>
 
 <div class="container">
-  <h1>My Pets</h1>
+  <h1 data-i18n="pets_title">My Pets</h1>
 
   <div id="petsList"></div>
 
   <hr>
 
   <div class="card card-soft">
-    <h2>Add a new pet</h2>
+    <h2 data-i18n="pets_add_title">Add a new pet</h2>
 
-    <label>Name</label>
+    <label data-i18n="pets_label_name">Name</label>
     <input id="petName">
 
-    <label>Type</label>
+    <label data-i18n="pets_label_type">Type</label>
     <input id="petType">
 
-    <label>Age</label>
+    <label data-i18n="pets_label_age">Age</label>
     <input id="petAge" type="number" min="0">
 
-    <button id="addPetBtn" class="btn-primary">Add Pet</button>
+    <button id="addPetBtn" class="btn-primary" data-i18n="pets_add">Add Pet</button>
 
     <div style="margin-top:1rem;">
-      <button id="backHomeBtn" class="back-button" type="button">Back to Home</button>
+      <button id="backHomeBtn" class="back-button" type="button"><span data-i18n="offer_back_home">Back to Home</span></button>
     </div>
 
     <p id="msg"></p>
@@ -133,8 +141,8 @@ async function loadPets() {
       <div style="display:flex; gap:1rem; align-items:center; background:#fffaf0; padding:1rem; border-radius:12px; border:1px solid #f1e2c4;">
         <img id="noPetsImg" data-random-pet src="/static/images/boarding-2.jpg" alt="Pet" style="width:96px; height:96px; border-radius:12px; object-fit:cover;">
         <div>
-          <p style="margin:0; font-weight:600;">No pets yet.</p>
-          <p style="margin:0.4rem 0 0; color:#666;">Add your first pet to start booking care.</p>
+          <p style="margin:0; font-weight:600;" data-i18n="pets_none_title">No pets yet.</p>
+          <p style="margin:0.4rem 0 0; color:#666;" data-i18n="pets_none_subtitle">Add your first pet to start booking care.</p>
         </div>
       </div>
     `;
@@ -147,7 +155,7 @@ async function loadPets() {
   pets.forEach(p => {
     const div = document.createElement("div");
     div.className = "pet";
-    div.textContent = `🐾 ${p.name} (${p.type}, ${p.age} yrs)`;
+    div.textContent = `🐾 ${p.name} (${p.type}, ${p.age} years)`;
     petsList.appendChild(div);
   });
 }
@@ -207,6 +215,7 @@ loadPets();
 
 <script src="/static/js/pet_images.js"></script>
 
+    <script src="/static/js/i18n.js"></script>
 </body>
 </html>
 

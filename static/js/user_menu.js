@@ -9,11 +9,12 @@ function initialsFromName(name){
 function buildUserMenu(user){
   const menu = document.getElementById('userMenu');
   if (!menu) return;
+  const t = (key, fallback) => (window.I18N ? window.I18N.t(key) : fallback);
 
   const trigger = document.createElement('button');
   trigger.className = 'user-menu-trigger';
   trigger.type = 'button';
-  trigger.title = 'Account';
+  trigger.title = t('common_my_profile', 'Account');
   trigger.textContent = initialsFromName(user.name) || (user.role ? user.role[0].toUpperCase() : '?');
 
   const dropdown = document.createElement('div');
@@ -21,27 +22,27 @@ function buildUserMenu(user){
 
   const nameRow = document.createElement('div');
   nameRow.className = 'user-menu-name';
-  nameRow.textContent = user.name || (user.role ? user.role.toUpperCase() : 'Account');
+  nameRow.textContent = user.name || (user.role ? user.role.toUpperCase() : t('common_my_profile', 'Account'));
   dropdown.appendChild(nameRow);
 
   if (user.role === 'provider') {
     const profile = document.createElement('a');
     profile.className = 'user-menu-item';
     profile.href = `/provider?id=${encodeURIComponent(user.id)}`;
-    profile.textContent = 'My Profile';
+    profile.textContent = t('nav_my_profile', 'My Profile');
     dropdown.appendChild(profile);
   } else if (user.role === 'owner') {
     const pets = document.createElement('a');
     pets.className = 'user-menu-item';
     pets.href = '/my-pets';
-    pets.textContent = 'My Pets';
+    pets.textContent = t('nav_my_pets', 'My Pets');
     dropdown.appendChild(pets);
   }
 
   const logout = document.createElement('a');
   logout.className = 'user-menu-item';
   logout.href = '#';
-  logout.textContent = 'Logout';
+  logout.textContent = t('nav_logout', 'Logout');
   logout.addEventListener('click', (e)=>{
     e.preventDefault();
     localStorage.removeItem('access_token');

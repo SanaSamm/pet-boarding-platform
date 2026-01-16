@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Care - SafePaws</title>
+    <title data-i18n="title_find">Find Care - SafePaws</title>
     <link rel="stylesheet" href="/static/css/style.css">
 
     <style>
@@ -37,7 +37,7 @@
             text-align: left;
         }
 
-        /* 🔥 FIX: labels were white on white */
+        /* FIX: labels were white on white */
         .filter-group label {
             color: #2c3e50;
             font-weight: 600;
@@ -69,6 +69,20 @@
             border-radius: 12px;
             padding: 1.5rem;
             background: white;
+        }
+        .service-card-media {
+            width: 100%;
+            height: 160px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fff7ea;
+            margin-bottom: 0.8rem;
+        }
+        .service-card-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         .price {
@@ -103,25 +117,33 @@
         <span class="logo-text">SafePaws</span>
     </a>
     <nav class="header-actions">
-        <a href="/messages">Messages</a>
-        <a href="/login" id="loginLink">Login</a>
+        <a href="/messages" data-i18n="nav_messages">Messages</a>
+        <a href="/login" id="loginLink" data-i18n="nav_login">Login</a>
+            <div class="lang-switcher">
+        <label class="sr-only" data-i18n="lang_label">Language</label>
+        <select class="lang-switcher-select">
+            <option value="en">EN</option>
+            <option value="fr">FR</option>
+            <option value="ar">AR</option>
+        </select>
+    </div>
         <div id="userMenu" class="user-menu"></div>
     </nav>
 </header>
 
 <div class="hero-search">
     <div class="search-container">
-        <h2>Search for Pet Care</h2>
+        <h2 data-i18n="find_title">Search for Pet Care</h2>
 
         <div class="filters">
             <div class="filter-group">
-                <label for="locationInput">Location</label>
-                <input type="text" id="locationInput" placeholder="e.g. Tunis, Sousse">
+                <label for="locationInput" data-i18n="common_location">Location</label>
+                <input type="text" id="locationInput" placeholder="e.g. Tunis, Sousse" data-i18n-placeholder="find_location_placeholder">
             </div>
 
             <div class="filter-group">
                 <label for="priceRange">
-                    Max Price: <span id="priceValue">100</span> TND/day
+                    <span data-i18n="find_price_label">Max Price</span>: <span id="priceValue">100</span> <span data-i18n="common_price_unit">TND/day</span>
                 </label>
                 <input type="range" id="priceRange" min="10" max="200" value="100">
             </div>
@@ -129,27 +151,32 @@
             <div class="filter-group">
                 <label>
                     <input type="checkbox" disabled>
-                    Available only
+                    <span data-i18n="find_available_only">Available only</span>
                 </label>
             </div>
 
-            <button class="btn-search" id="searchBtn">Search</button>
-            <button class="btn-search" id="findNearestBtn" style="background:#2ecc71; margin-left:8px;">Find nearest providers</button>
+            <button class="btn-search" id="searchBtn" data-i18n="common_search">Search</button>
+            <button class="btn-search" id="findNearestBtn" style="background:#2ecc71; margin-left:8px;" data-i18n="common_find_nearest">Find nearest providers</button>
         </div>
     </div>
 </div>
 
 <section class="concierge">
     <div class="concierge-card">
-        <div>
-            <h3>AI Care Concierge</h3>
-            <p>Ask for grooming, boarding, or nearby care in Tunisia — I'll find providers fast.</p>
+        <div class="concierge-header">
+            <div class="concierge-avatar">
+                <img src="/static/images/logo.png" alt="SafePaws logo">
+            </div>
+            <div>
+                <h3 data-i18n="concierge_title">AI Care Concierge</h3>
+                <p><span data-i18n="concierge_subtitle">Ask for grooming, boarding, or nearby care in Tunisia - I'll find providers fast.</span></p>
+            </div>
         </div>
         <div class="concierge-inputs">
-            <input type="text" id="conciergeInput" placeholder="e.g. grooming in Tunis under 40 TND">
-            <button id="conciergeBtn">Ask</button>
+            <input type="text" id="conciergeInput" placeholder="e.g. grooming in Tunis under 40 TND" data-i18n-placeholder="concierge_placeholder">
+            <button id="conciergeBtn" data-i18n="concierge_ask">Ask</button>
         </div>
-        <div id="conciergeAnswer" class="concierge-answer"></div>
+        <div id="conciergeThread" class="concierge-thread"></div>
         <div id="conciergeResults" class="concierge-results"></div>
     </div>
 </section>
@@ -163,7 +190,7 @@ const locationInput = document.getElementById("locationInput");
 const searchBtn = document.getElementById("searchBtn");
 const servicesGrid = document.getElementById("servicesGrid");
 
-/* ✅ Slider value updates */
+/* Slider value updates */
 priceRange.addEventListener("input", e => {
     priceValue.textContent = e.target.value;
 });
@@ -183,7 +210,7 @@ async function fetchServices() {
         renderServices(services);
     } catch (err) {
         console.error(err);
-        servicesGrid.innerHTML = "<p>Failed to load services.</p>";
+        servicesGrid.innerHTML = "<p>" + (window.I18N ? window.I18N.t("find_services_failed") : "Failed to load services.") + "</p>";
     }
 }
 
@@ -191,33 +218,43 @@ function renderServices(services) {
     servicesGrid.innerHTML = "";
 
     if (!services.length) {
-        servicesGrid.innerHTML = "<p>No services match your filters.</p>";
+        servicesGrid.innerHTML = "<p>" + (window.I18N ? window.I18N.t("find_services_empty") : "No services match your filters.") + "</p>";
         return;
     }
 
     services.forEach(service => {
-    const card = document.createElement("div");
-    card.className = "service-card";
+        const card = document.createElement("div");
+        card.className = "service-card";
 
-    const distanceHtml = service.distance_km != null ? `<p>📏 ${service.distance_km.toFixed(2)} km away</p>` : "";
+        const distanceHtml = service.distance_km != null
+            ? `<p>${service.distance_km.toFixed(2)} ${(window.I18N ? window.I18N.t("common_km_away") : "km away")}</p>`
+            : "";
 
-    // Prefer to show short friendly geocoded name (if available)
-    const shortLoc = service.geocoded_short || service.geocoded_name || '';
+        const shortLoc = service.geocoded_short || service.geocoded_name || '';
+        const photoUrl = service.photo_url || '';
+        const imageHtml = photoUrl
+            ? `<img src="${photoUrl}" alt="${service.name}">`
+            : `<img src="/static/images/boarding-1.jpg" data-random-pet alt="${service.name}">`;
 
-    card.innerHTML = `
-        <h3>${service.name}</h3>
-        <p>📍 ${service.location}${shortLoc ? ` — <small title="${service.geocoded_name || ''}">${shortLoc}</small>` : ""}</p>
-        ${distanceHtml}
-        <p class="price">${service.price_per_day ?? "N/A"} TND/day</p>
+        card.innerHTML = `
+            <div class="service-card-media">${imageHtml}</div>
+            <h3>${service.name}</h3>
+            <p>${(window.I18N ? window.I18N.t("common_location") : "Location")}: ${service.location}${shortLoc ? ` - <small title="${service.geocoded_name || ''}">${shortLoc}</small>` : ""}</p>
+            ${distanceHtml}
+            <p class="price">${service.price_per_day ?? (window.I18N ? window.I18N.t("common_price_na") : "N/A")} ${(window.I18N ? window.I18N.t("common_price_unit") : "TND/day")}</p>
 
-        <a class="btn-search" href="/service-details?id=${service.id}">
-            Details
-        </a>
-    `;
+            <a class="btn-search" href="/service-details?id=${service.id}">
+                ${(window.I18N ? window.I18N.t("common_details") : "Details")}
+            </a>
+        `;
 
-    servicesGrid.appendChild(card);
-});
+        const imgEl = card.querySelector('img[data-random-pet]');
+        if (imgEl && window.loadRandomPetImage) {
+            window.loadRandomPetImage(imgEl);
+        }
 
+        servicesGrid.appendChild(card);
+    });
 }
 
 searchBtn.addEventListener("click", fetchServices);
@@ -226,12 +263,12 @@ const findNearestBtn = document.getElementById('findNearestBtn');
 if (findNearestBtn) {
     findNearestBtn.addEventListener('click', () => {
         if (!navigator.geolocation) {
-            alert('Geolocation is not supported by your browser');
+            alert(window.I18N ? window.I18N.t('find_geo_unsupported') : 'Geolocation is not supported by your browser');
             return;
         }
         findNearestBtn.disabled = true;
         const originalText = findNearestBtn.textContent;
-        findNearestBtn.textContent = 'Locating…';
+        findNearestBtn.textContent = window.I18N ? window.I18N.t('common_locating') : 'Locating...';
 
         const tryGetLocation = (options) => new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(resolve, reject, options);
@@ -267,7 +304,7 @@ if (findNearestBtn) {
                 renderServices(services);
             } catch (err) {
                 console.error(err);
-                alert('Failed to fetch nearby services.');
+                alert(window.I18N ? window.I18N.t('find_nearby_failed') : 'Failed to fetch nearby services.');
             } finally {
                 findNearestBtn.disabled = false;
                 findNearestBtn.textContent = originalText;
@@ -280,7 +317,9 @@ if (findNearestBtn) {
 fetchServices();
 </script>
 <script src="/static/js/ai_concierge.js"></script>
+<script src="/static/js/pet_images.js"></script>
 <script src="/static/js/user_menu.js"></script>
 
+    <script src="/static/js/i18n.js"></script>
 </body>
 </html>

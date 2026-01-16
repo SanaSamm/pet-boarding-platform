@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafePaws - A safe home for every pet</title>
+    <title data-i18n="title_home">SafePaws - A safe home for every pet</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
         .hero { 
@@ -90,54 +90,63 @@
         </a>
         <div class="header-actions">
             <nav>
-                <a href="/">Home</a>
-                <a href="/find-care">Find Care</a>
-                <a href="/offer-care">Offer Care</a>
-                <a href="/messages">Messages</a>
-                <a href="/community">Community</a>
+                <a href="/" data-i18n="nav_home">Home</a>
+                <a href="/find-care" data-i18n="nav_find">Find Care</a>
+                <a href="/offer-care" data-i18n="nav_offer">Offer Care</a>
+                <a href="/messages" data-i18n="nav_messages">Messages</a>
+                <a href="/community" data-i18n="nav_community">Community</a>
             </nav>
-            <a href="/login" id="loginLink">Login</a>
+            <a href="/login" id="loginLink" data-i18n="nav_login">Login</a>
+            <div class="lang-switcher">
+        <label class="sr-only" data-i18n="lang_label">Language</label>
+        <select class="lang-switcher-select">
+            <option value="en">EN</option>
+            <option value="fr">FR</option>
+            <option value="ar">AR</option>
+        </select>
+    </div>
             <div id="userMenu" class="user-menu"></div>
         </div>
     </header>
 
     <div class="hero">
         <div class="container">
-            <h1>Find trusted pet care for my pet</h1>
-            <p class="tagline">A safe home for every pet.</p>
+            <h1 data-i18n="home_hero_title">Find trusted pet care for my pet</h1>
+            <p class="tagline" data-i18n="home_tagline">A safe home for every pet.</p>
             <div class="cta-group">
-                <a href="/find-care" class="cta-button cta-primary">Find trusted pet care for my pet</a>
-                <a href="/offer-care" class="cta-button cta-secondary">I offer pet care services</a>
+                <a href="/find-care" class="cta-button cta-primary" data-i18n="home_cta_find">Find trusted pet care for my pet</a>
+                <a href="/offer-care" class="cta-button cta-secondary" data-i18n="home_cta_offer">I offer pet care services</a>
             </div>
         </div>
     </div>
     <section class="highlights">
-        <h2>Why pet parents choose SafePaws</h2>
+        <h2 data-i18n="home_why_title">Why pet parents choose SafePaws</h2>
         <div class="highlights-grid">
             <div class="highlight-card">
                 <img src="/static/images/boarding-1.jpg" data-random-pet alt="Trusted sitters">
                 <div class="content">
-                    <h3>Verified care</h3>
-                    <p>Providers are reviewed by real owners, with transparent ratings.</p>
+                    <h3 data-i18n="home_card_verified_title">Verified care</h3>
+                    <p data-i18n="home_card_verified_desc">Providers are reviewed by real owners, with transparent ratings.</p>
                 </div>
             </div>
             <div class="highlight-card">
                 <img src="/static/images/boarding-2.jpg" data-random-pet alt="Local care">
                 <div class="content">
-                    <h3>Nearby & affordable</h3>
-                    <p>Search by location and max price in TND to fit your budget.</p>
+                    <h3 data-i18n="home_card_nearby_title">Nearby & affordable</h3>
+                    <p data-i18n="home_card_nearby_desc">Search by location and max price in TND to fit your budget.</p>
                 </div>
             </div>
             <div class="highlight-card">
                 <img src="/static/images/boarding-3.jpg" data-random-pet alt="Chat with providers">
                 <div class="content">
-                    <h3>Direct chat</h3>
-                    <p>Message providers before booking to confirm details.</p>
+                    <h3 data-i18n="home_card_chat_title">Direct chat</h3>
+                    <p data-i18n="home_card_chat_desc">Message providers before booking to confirm details.</p>
                 </div>
             </div>
         </div>
     </section>
     <script src="/static/js/user_menu.js"></script>
     <script src="/static/js/pet_images.js"></script>
+    <script src="/static/js/i18n.js"></script>
 </body>
 </html>

@@ -26,4 +26,6 @@ class ConciergeResponseSchema(Schema):
     query = fields.Str()
     interpreted = fields.Dict()
     answer = fields.Str()
+    mode = fields.Str()
+    llm_used = fields.Bool()
     results = fields.List(fields.Nested(ConciergeResultSchema))

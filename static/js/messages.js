@@ -2,6 +2,7 @@ let activeConvoId = null;
 let pollInterval = null;
 let currentUser = null;
 let searchTimer = null;
+const t = (key, fallback) => (window.I18N ? window.I18N.t(key) : fallback);
 
 function initialsFromName(name){
   if (!name) return '';
@@ -49,7 +50,7 @@ async function loadConversations(){
     const convos = await apiFetch('/conversations');
     const el = document.getElementById('convoList');
     el.innerHTML = '';
-    if (!convos.length) el.innerHTML = '<p>No conversations yet</p>';
+    if (!convos.length) el.innerHTML = `<p>${t('messages_none', 'No conversations yet')}</p>`;
     convos.forEach(c => {
       const div = document.createElement('div');
       div.className = 'convo-item';
@@ -82,9 +83,9 @@ async function loadConversations(){
       const sub = document.createElement('div');
       sub.style.fontSize = '0.85rem';
       sub.style.color = '#666';
-      const ownerLabel = c.owner_name ? `Owner ${c.owner_name}` : `Owner ${c.owner_id}`;
-      const providerLabel = c.provider_name ? `Provider ${c.provider_name}` : `Provider ${c.provider_id}`;
-      sub.textContent = `${ownerLabel} • ${providerLabel}`;
+      const ownerLabel = c.owner_name ? `${t('common_owner', 'Owner')} ${c.owner_name}` : `${t('common_owner', 'Owner')} ${c.owner_id}`;
+      const providerLabel = c.provider_name ? `${t('common_provider', 'Provider')} ${c.provider_name}` : `${t('common_provider', 'Provider')} ${c.provider_id}`;
+      sub.textContent = `${ownerLabel} - ${providerLabel}`;
       meta.appendChild(titleRow);
       meta.appendChild(sub);
 
@@ -102,7 +103,7 @@ async function loadConversations(){
     });
   } catch(err){
     console.error(err);
-    alert('Error loading conversations. Make sure you are logged in.');
+    alert(t('messages_load_failed', 'Error loading conversations. Make sure you are logged in.'));
   }
 }
 
@@ -179,7 +180,7 @@ document.getElementById('sendMessageForm').addEventListener('submit', async (e)=
     loadMessages();
   } catch(err){
     console.error(err);
-    alert('Failed to send message');
+    alert(t('messages_send_failed', 'Failed to send message'));
   }
 });
 
@@ -187,7 +188,7 @@ function renderProviderResults(items){
   const results = document.getElementById('providerResults');
   results.innerHTML = '';
   if (!items.length){
-    results.innerHTML = '<div class="new-convo-status">No providers found.</div>';
+    results.innerHTML = `<div class="new-convo-status">${t('messages_no_providers', 'No results found.')}</div>`;
     return;
   }
   items.forEach(p => {
@@ -217,7 +218,7 @@ function renderProviderResults(items){
         document.getElementById('newConvoPanel').style.display = 'none';
       } catch (err){
         console.error(err);
-        alert('Failed to start conversation');
+        alert(t('messages_start_failed', 'Failed to start conversation'));
       }
     });
 
@@ -237,7 +238,7 @@ async function handleProviderSearch(query){
     renderProviderResults(data);
   } catch (err){
     console.error(err);
-    results.innerHTML = '<div class="new-convo-status">Search failed.</div>';
+    results.innerHTML = `<div class="new-convo-status">${t('messages_search_failed', 'Search failed.')}</div>`;
   }
 }
 
@@ -248,15 +249,15 @@ document.getElementById('newConvoBtn').addEventListener('click', async ()=>{
   const searchInput = document.getElementById('providerSearchInput');
 
   if (!currentUser){
-    status.textContent = 'Log in to start a conversation.';
+    status.textContent = t('messages_status_login', 'Log in to start a conversation.');
     panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
     return;
   }
 
   if (currentUser.role === 'owner'){
-    status.textContent = 'Search providers to start a conversation.';
+    status.textContent = t('messages_status_search_provider', 'Search providers to start a conversation.');
     searchInput.disabled = false;
-    searchInput.placeholder = 'Search providers by name';
+    searchInput.placeholder = t('messages_search_provider', 'Search providers by name');
     panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
     if (panel.style.display === 'block'){
       searchInput.focus();
@@ -265,9 +266,9 @@ document.getElementById('newConvoBtn').addEventListener('click', async ()=>{
   }
 
   if (currentUser.role === 'provider'){
-    status.textContent = 'Search owners to start a conversation.';
+    status.textContent = t('messages_status_search_owner', 'Search owners to start a conversation.');
     searchInput.disabled = false;
-    searchInput.placeholder = 'Search owners by name';
+    searchInput.placeholder = t('messages_search_owner', 'Search owners by name');
     panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
     if (panel.style.display === 'block'){
       searchInput.focus();

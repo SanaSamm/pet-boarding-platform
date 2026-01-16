@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Messages</title>
+    <title data-i18n="title_messages">Messages</title>
     <link rel="stylesheet" href="/static/css/style.css" />
   </head>
   <body>
@@ -12,25 +12,33 @@
         <span class="logo-text">SafePaws</span>
       </a>
       <nav class="header-actions">
-        <a href="/find-care">Find Care</a>
-        <a href="/offer-care">Offer Care</a>
-        <a href="/login" id="loginLink">Login</a>
+        <a href="/find-care" data-i18n="nav_find">Find Care</a>
+        <a href="/offer-care" data-i18n="nav_offer">Offer Care</a>
+        <a href="/login" id="loginLink" data-i18n="nav_login">Login</a>
+            <div class="lang-switcher">
+        <label class="sr-only" data-i18n="lang_label">Language</label>
+        <select class="lang-switcher-select">
+            <option value="en">EN</option>
+            <option value="fr">FR</option>
+            <option value="ar">AR</option>
+        </select>
+    </div>
         <div id="userMenu" class="user-menu"></div>
       </nav>
     </header>
     <div class="container">
-      <h1 style="text-align:center; margin-top:1rem">Messages</h1>
+      <h1 style="text-align:center; margin-top:1rem" data-i18n="messages_title">Messages</h1>
 
       <div class="chat-page">
         <aside class="convo-list card-soft" id="conversations">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem">
-            <h3 style="margin:0">Conversations</h3>
-            <button class="back-button" id="newConvoBtn">New</button>
+            <h3 style="margin:0" data-i18n="messages_title">Conversations</h3>
+            <button class="back-button" id="newConvoBtn" data-i18n="messages_new">New</button>
           </div>
           <div id="newConvoPanel" class="new-convo-panel" style="display:none">
             <div id="newConvoStatus" class="new-convo-status"></div>
             <div id="providerSearchWrap">
-              <input type="text" id="providerSearchInput" placeholder="Search providers by name" autocomplete="off" />
+              <input type="text" id="providerSearchInput" placeholder="Search providers by name" data-i18n-placeholder="messages_search_provider" autocomplete="off" />
               <div id="providerResults" class="provider-results"></div>
             </div>
           </div>
@@ -38,12 +46,12 @@
         </aside>
 
         <section class="thread" id="thread">
-          <h3 id="threadTitle">Select a conversation</h3>
-          <div class="messages-area" id="messagesArea">Start a conversation to see messages here.</div>
+          <h3 id="threadTitle" data-i18n="messages_select">Select a conversation</h3>
+          <div class="messages-area" id="messagesArea" data-i18n="messages_start_hint">Start a conversation to see messages here.</div>
 
           <form id="sendMessageForm" class="message-input" style="display:none">
-            <input type="text" id="messageInput" placeholder="Write a message" autocomplete="off" />
-            <button type="submit">Send</button>
+            <input type="text" id="messageInput" placeholder="Write a message" data-i18n-placeholder="messages_write_placeholder" autocomplete="off" />
+            <button type="submit" data-i18n="common_send">Send</button>
           </form>
         </section>
       </div>
@@ -51,5 +59,6 @@
 
     <script src="/static/js/messages.js"></script>
     <script src="/static/js/user_menu.js"></script>
-  </body>
+      <script src="/static/js/i18n.js"></script>
+</body>
 </html>

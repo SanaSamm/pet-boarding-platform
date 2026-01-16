@@ -2,6 +2,7 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from flask import request
 import os
+import requests
 
 from db import db
 from models.service import BoardingServiceModel
@@ -54,16 +55,55 @@ def _build_highlights(services, avg_rating, review_count):
     return " | ".join(parts) if parts else None
 
 
-def _llm_answer(query_text, matches):
-    token = os.getenv("HF_API_TOKEN")
-    if not token:
+def _aiml_chat(prompt, max_tokens, temperature):
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    if not api_key:
         return None
 
-    model_url = os.getenv(
-        "HF_MODEL_URL",
-        "https://api-inference.huggingface.co/models/tencent/HY-MT1.5-1.8B"
-    )
+    base_url = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
+    model = os.getenv("OPENROUTER_MODEL", "openai/gpt-5.2")
+    site_url = os.getenv("OPENROUTER_SITE_URL")
+    site_title = os.getenv("OPENROUTER_SITE_TITLE")
+    url = base_url.rstrip("/") + "/chat/completions"
 
+    try:
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
+        if site_url:
+            headers["HTTP-Referer"] = site_url
+        if site_title:
+            headers["X-Title"] = site_title
+
+        resp = requests.post(
+            url,
+            headers=headers,
+            json={
+                "model": model,
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+            },
+            timeout=15,
+        )
+        if not resp.ok:
+            print(f"OpenRouter API error {resp.status_code}: {resp.text}")
+            return None
+        data = resp.json()
+        choices = data.get("choices") if isinstance(data, dict) else None
+        if choices and isinstance(choices, list):
+            message = choices[0].get("message") or {}
+            text = message.get("content")
+            return text.strip() if text else None
+    except Exception as exc:
+        print(f"OpenRouter API request failed: {exc}")
+        return None
+
+    return None
+
+
+def _llm_answer(query_text, matches):
     lines = []
     for m in matches[:5]:
         price = m.get("price_per_day")
@@ -81,33 +121,19 @@ def _llm_answer(query_text, matches):
         "If no matches, suggest changing location, price, or service type.\n"
     )
 
-    try:
-        resp = requests.post(
-            model_url,
-            headers={"Authorization": f"Bearer {token}"},
-            json={
-                "inputs": prompt,
-                "parameters": {"max_new_tokens": 180, "temperature": 0.2, "return_full_text": False},
-                "options": {"wait_for_model": True},
-            },
-            timeout=10,
-        )
-        if not resp.ok:
-            return None
-        data = resp.json()
-        # HF can return list[{"generated_text": ...}] or {"generated_text": ...} or {"error": ...}
-        if isinstance(data, dict):
-            if data.get("error"):
-                return None
-            text = data.get("generated_text") or data.get("text")
-            return text.strip() if text else None
-        if isinstance(data, list) and data and isinstance(data[0], dict):
-            text = data[0].get("generated_text") or data[0].get("text")
-            return text.strip() if text else None
-    except Exception:
-        return None
+    return _aiml_chat(prompt, max_tokens=180, temperature=0.2)
 
-    return None
+
+def _llm_general_answer(query_text):
+    prompt = (
+        "You are SafePaws AI assistant. Answer user questions about the pet boarding platform, "
+        "booking flow, pricing basics, reviews, messaging, and how to use the app. "
+        "If unsure, ask a clarifying question. Keep it short and helpful.\n"
+        f"User query: {query_text}\n"
+        "Answer:\n"
+    )
+
+    return _aiml_chat(prompt, max_tokens=160, temperature=0.3)
 
 
 def _extract_city(text):
@@ -194,11 +220,15 @@ class Concierge(MethodView):
                     abort(400, message="max_price must be a number")
             return q
 
-        results = build_query(with_city=True).limit(8).all()
+        has_service_intent = bool(keyword_variants or city or max_price is not None)
+
+        results = []
         expanded_search = False
-        if not results and city:
-            results = build_query(with_city=False).limit(8).all()
-            expanded_search = True
+        if has_service_intent:
+            results = build_query(with_city=True).limit(8).all()
+            if not results and city:
+                results = build_query(with_city=False).limit(8).all()
+                expanded_search = True
 
         # Distance sorting if coordinates provided
         if lat is not None and lng is not None:
@@ -247,12 +277,22 @@ class Concierge(MethodView):
                 "highlights": highlights,
             })
 
-        answer = "I found {} matching providers.".format(len(payload))
-        if keyword:
-            answer = "I found {} providers offering {}.".format(len(payload), keyword)
-        llm = _llm_answer(query_text, payload)
-        if llm:
-            answer = llm
+        llm_used = False
+        if has_service_intent:
+            answer = "I found {} matching providers.".format(len(payload))
+            if keyword:
+                answer = "I found {} providers offering {}.".format(len(payload), keyword)
+            llm = _llm_answer(query_text, payload)
+            if llm:
+                answer = llm
+                llm_used = True
+        else:
+            llm = _llm_general_answer(query_text)
+            if llm:
+                answer = llm
+                llm_used = True
+            else:
+                answer = "Hi! How can I help you with pet care today?"
         note = None
         if expanded_search:
             note = "No exact matches in {}. Showing providers outside that city.".format(city)
@@ -261,6 +301,8 @@ class Concierge(MethodView):
             "query": query_text,
             "interpreted": {"location": city, "service_keyword": keyword, "max_price": max_price, "expanded_search": expanded_search},
             "answer": answer,
+            "mode": "service" if has_service_intent else "general",
+            "llm_used": llm_used,
             "note": note,
             "results": payload,
         }

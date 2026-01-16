@@ -1,6 +1,7 @@
 const ROOM_NAME = 'owners'; // we will create/fetch first room called 'owners'
 let roomId = null;
 let pollInterval = null;
+const t = (key, fallback) => (window.I18N ? window.I18N.t(key) : fallback);
 
 function avatarInitial(role, id){ return (role[0]||'?').toUpperCase() + String(id); }
 function avatarColor(id){ const colors = ['#f39c12','#16a085','#8e44ad','#e74c3c','#3498db','#2ecc71']; return colors[id % colors.length]; }
@@ -75,7 +76,7 @@ document.getElementById('sendForm').addEventListener('submit', async (e)=>{
     loadMessages();
   } catch(err){
     console.error(err);
-    alert('Failed to send message. Are you logged in as an owner?');
+    alert(t('community_send_failed', 'Failed to send message. Are you logged in as an owner?'));
   }
 });
 
@@ -86,7 +87,7 @@ document.getElementById('sendForm').addEventListener('submit', async (e)=>{
     pollInterval = setInterval(loadMessages, 3000);
   } catch(err){
     console.error(err);
-    alert('Failed to initialize community chat.');
+    alert(t('community_init_failed', 'Failed to initialize community chat.'));
   }
 })();
 

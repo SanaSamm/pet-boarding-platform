@@ -164,6 +164,57 @@ nav a:hover::after {
     width: 100%;
 }
 
+.lang-switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.lang-switcher select {
+    padding: 0.35rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid #e6d6b3;
+    background: #fffaf3;
+    font-weight: 600;
+    color: var(--ink-700);
+}
+
+.auth-lang {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 2000;
+    background: rgba(255,255,255,0.9);
+    padding: 0.4rem 0.6rem;
+    border-radius: 10px;
+    border: 1px solid rgba(243,156,18,0.2);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+body[dir="rtl"] {
+    direction: rtl;
+}
+
+body[dir="rtl"] nav,
+body[dir="rtl"] .header-actions {
+    flex-direction: row-reverse;
+}
+
+body[dir="rtl"] .concierge-message--user {
+    flex-direction: row;
+}
+
 .btn-primary {
     background: var(--brand-orange);
     color: white;
@@ -428,6 +479,28 @@ input:focus, textarea:focus, select:focus {
     margin: 0 0 1rem 0;
     color: var(--ink-500);
 }
+.concierge-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.concierge-avatar {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: #fff4dd;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(243,156,18,0.2);
+    box-shadow: 0 6px 18px rgba(243,156,18,0.2);
+}
+.concierge-avatar img {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+}
 .concierge-inputs {
     display: flex;
     gap: 0.8rem;
@@ -448,9 +521,69 @@ input:focus, textarea:focus, select:focus {
     font-weight: 700;
     cursor: pointer;
 }
-.concierge-answer {
+.concierge-thread {
     margin-top: 1rem;
-    font-weight: 600;
+    padding: 1rem;
+    border-radius: 14px;
+    background: #fff7ea;
+    border: 1px solid rgba(243,156,18,0.18);
+    max-height: 320px;
+    overflow: auto;
+}
+.concierge-message {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 0.9rem;
+    align-items: flex-end;
+}
+.concierge-message--user {
+    flex-direction: row-reverse;
+}
+.concierge-avatar--bot img {
+    width: 28px;
+    height: 28px;
+}
+.concierge-avatar--user {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #334155;
+    font-weight: 700;
+    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0;
+}
+.concierge-bubble {
+    padding: 0.8rem 1rem;
+    border-radius: 16px;
+    max-width: 80%;
+    line-height: 1.5;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+.concierge-bubble--bot {
+    background: #fff;
+    border: 1px solid rgba(243,156,18,0.18);
+    border-bottom-left-radius: 4px;
+}
+.concierge-bubble--user {
+    background: linear-gradient(135deg, #ffe8c2, #ffdca6);
+    border-bottom-right-radius: 4px;
+}
+.concierge-bubble p {
+    margin: 0 0 0.6rem;
+}
+.concierge-bubble p:last-child {
+    margin-bottom: 0;
+}
+.concierge-list {
+    margin: 0.6rem 0 0;
+    padding-left: 1.2rem;
+}
+.concierge-list li {
+    margin-bottom: 0.4rem;
 }
 .concierge-results {
     margin-top: 0.8rem;
@@ -462,6 +595,11 @@ input:focus, textarea:focus, select:focus {
     border-radius: 12px;
     background: #fffaf3;
     border: 1px solid rgba(243,156,18,0.18);
+}
+.concierge-highlight {
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 4px;
 }
 @media (max-width: 800px) {
     .chat-page { grid-template-columns: 1fr; }

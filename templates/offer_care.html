@@ -89,29 +89,37 @@
 </head>
 
 <body>
+<div class="lang-switcher auth-lang">
+  <label class="sr-only" data-i18n="lang_label">Language</label>
+  <select class="lang-switcher-select">
+    <option value="en">EN</option>
+    <option value="fr">FR</option>
+    <option value="ar">AR</option>
+  </select>
+</div>
 
   <div class="card card-soft">
-    <h1>Create a Service</h1>
+    <h1 data-i18n="offer_title">Create a Service</h1>
 
     <form id="service-form">
 
       <div class="form-group">
-        <label for="title">Service Name</label>
+        <label for="title" data-i18n="offer_name">Service Name</label>
         <input type="text" name="title" id="title" required />
       </div>
 
       <div class="form-group">
-        <label for="description">Description</label>
+        <label for="description" data-i18n="offer_description">Description</label>
         <textarea name="description" id="description" required></textarea>
       </div>
 
       <div class="form-group">
-        <label for="location">Location</label>
+        <label for="location" data-i18n="offer_location">Location</label>
         <input type="text" name="location" id="location" required />
       </div>
 
       <div class="form-group">
-        <label><input type="checkbox" id="detectExact"> Add my exact location (detect)</label>
+        <label><input type="checkbox" id="detectExact"> <span data-i18n="offer_exact_location">Add my exact location (detect)</span></label>
         <input type="hidden" name="latitude" id="latitude">
         <input type="hidden" name="longitude" id="longitude">
         <input type="hidden" name="geocoded_name" id="geocoded_name">
@@ -120,39 +128,39 @@
       </div>
 
       <div class="form-group">
-        <label for="price_per_day">Price per Day (TND)</label>
+        <label for="price_per_day" data-i18n="offer_price">Price per Day (TND)</label>
         <input type="number" name="price_per_day" id="price_per_day" required />
       </div>
 
       <div class="form-group">
-        <label for="capacity">Capacity (number of pets)</label>
+        <label for="capacity" data-i18n="offer_capacity">Capacity (number of pets)</label>
         <input type="number" name="capacity" id="capacity" min="1" required />
       </div>
 
       <hr style="margin:1rem 0; border:none; border-top:1px solid #eee;">
-      <h3>Your Provider Profile (optional)</h3>
+      <h3 data-i18n="offer_profile_optional">Your Provider Profile (optional)</h3>
 
       <div class="form-group">
-        <label for="bio">Short Bio</label>
-        <textarea name="bio" id="bio" rows="3" placeholder="Tell pet owners about your care style and experience"></textarea>
+        <label for="bio" data-i18n="offer_bio">Short Bio</label>
+        <textarea name="bio" id="bio" rows="3" placeholder="Tell pet owners about your care style and experience" data-i18n-placeholder="offer_bio_placeholder"></textarea>
       </div>
 
       <div class="form-group">
-        <label for="photo_url">Profile Photo URL</label>
-        <input type="url" name="photo_url" id="photo_url" placeholder="https://example.com/your-photo.jpg">
+        <label for="photo_url" data-i18n="offer_photo">Profile Photo URL</label>
+        <input type="url" name="photo_url" id="photo_url" placeholder="https://example.com/your-photo.jpg" data-i18n-placeholder="offer_photo_placeholder">
       </div> 
 
       <div class="form-group">
-        <label for="type">Service Type</label>
+        <label for="type" data-i18n="offer_type">Service Type</label>
         <select name="type" id="type" required>
-          <option value="boarding">Boarding</option>
-          <option value="daycare">Day Care</option>
+          <option value="boarding" data-i18n="offer_service_boarding">Boarding</option>
+          <option value="daycare" data-i18n="offer_service_daycare">Day Care</option>
         </select>
       </div>
 
       <!-- ✅ NEW: Services Provided -->
       <div class="form-group">
-        <label>Services Provided</label>
+        <label data-i18n="offer_services">Services Provided</label>
 
         <div class="checkbox-group">
           <label>
@@ -182,18 +190,19 @@
         </div>
       </div>
 
-      <button type="submit" class="btn-primary">Save Service</button>
+      <button type="submit" class="btn-primary" data-i18n="offer_submit">Save Service</button>
     </form>
 
     <div style="text-align:center; margin-top: 1rem;">
-      <button id="viewProfileBtn" type="button" class="btn-secondary" style="display:none; margin-right: 0.5rem;">View / Edit Profile</button>
-      <button id="backHomeBtn" type="button" class="back-button" style="display:none;">Back to Home</button>
+      <button id="viewProfileBtn" type="button" class="btn-secondary" style="display:none; margin-right: 0.5rem;"><span data-i18n="offer_view_profile">View / Edit Profile</span></button>
+      <button id="backHomeBtn" type="button" class="back-button" style="display:none;"><span data-i18n="offer_back_home">Back to Home</span></button>
     </div>
   </div>
 
   <!-- JS already adapted earlier -->
   <script src="/static/js/offer_care.js"></script>
 
+    <script src="/static/js/i18n.js"></script>
 </body>
 </html>
 

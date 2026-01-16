@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Safepaws</title>
+    <title data-i18n="title_register">Register - SafePaws</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
         body { margin: 0; font-family: "Manrope", "Trebuchet MS", sans-serif; background: linear-gradient(180deg, rgba(255,250,243,0.95), rgba(255,255,255,0.95)), url('/static/images/boarding-1.jpg') center/cover no-repeat; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
@@ -21,6 +21,14 @@
     </style>
 </head>
 <body>
+<div class="lang-switcher auth-lang">
+  <label class="sr-only" data-i18n="lang_label">Language</label>
+  <select class="lang-switcher-select">
+    <option value="en">EN</option>
+    <option value="fr">FR</option>
+    <option value="ar">AR</option>
+  </select>
+</div>
 
 <div class="auth-card">
     <a href="/" class="logo-container">
@@ -28,41 +36,41 @@
         <span class="logo-text">SafePaws</span>
     </a>
 
-    <h1>Create Account</h1>
+    <h1 data-i18n="register_title">Create Account</h1>
 
     <form id="registerForm">
         <div class="form-group">
-            <label>I am a...</label>
+            <label data-i18n="register_role_label">I am a...</label>
             <select id="role" required>
-                <option value="owner">Pet Owner</option>
-                <option value="provider">Care Provider</option>
+                <option value="owner" data-i18n="register_role_owner">Pet Owner</option>
+                <option value="provider" data-i18n="register_role_provider">Care Provider</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label>Full Name</label>
+            <label data-i18n="register_name">Full Name</label>
             <input type="text" id="name" required>
         </div>
 
         <div class="form-group">
-            <label>Email</label>
+            <label data-i18n="register_email">Email</label>
             <input type="email" id="email" required>
         </div>
 
         <div class="form-group">
-            <label>Password</label>
+            <label data-i18n="register_password">Password</label>
             <input type="password" id="password" required>
         </div>
 
     
 
-    <button class="btn-primary" type="submit">Register</button>
+    <button class="btn-primary" type="submit" data-i18n="register_btn">Register</button>
     </form>
 
     <p id="msg"></p>
 
     <div class="footer-link">
-        Already have an account? <a href="/login">Login</a>
+        <span data-i18n="register_login_hint">Already have an account?</span> <a href="/login" data-i18n="nav_login">Login</a>
     </div>
 </div>
 
@@ -100,5 +108,6 @@ document.getElementById("registerForm").addEventListener("submit", async e => {
 </script>
 
 
+    <script src="/static/js/i18n.js"></script>
 </body>
 </html>

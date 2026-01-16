@@ -2,6 +2,7 @@
 Main application factory for the Pet Boarding API.
 """
 from flask import Flask
+from dotenv import load_dotenv
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
 
@@ -13,6 +14,7 @@ from marshmallow import ValidationError
 
 def create_app() -> Flask:
     """Application factory function."""
+    load_dotenv()
     app = Flask(__name__)
 
     # --------------------
