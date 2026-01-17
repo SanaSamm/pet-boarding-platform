@@ -2,6 +2,7 @@ const ROOM_NAME = 'owners'; // we will create/fetch first room called 'owners'
 let roomId = null;
 let pollInterval = null;
 const t = (key, fallback) => (window.I18N ? window.I18N.t(key) : fallback);
+const avatarCache = new Map();
 
 function avatarInitial(role, id){ return (role[0]||'?').toUpperCase() + String(id); }
 function avatarColor(id){ const colors = ['#f39c12','#16a085','#8e44ad','#e74c3c','#3498db','#2ecc71']; return colors[id % colors.length]; }
@@ -40,7 +41,39 @@ async function loadMessages(){
       const av = document.createElement('div');
       av.className = 'avatar';
       av.style.background = avatarColor(m.sender_id);
-      av.textContent = avatarInitial('owner', m.sender_id);
+      const displayName = m.sender_name || `${t('common_owner', 'Owner')} ${m.sender_id}`;
+
+      if (avatarCache.has(m.sender_id)) {
+        const img = document.createElement('img');
+        img.src = avatarCache.get(m.sender_id);
+        img.alt = displayName;
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+        img.style.borderRadius = '50%';
+        av.appendChild(img);
+      } else {
+        av.textContent = avatarInitial('owner', m.sender_id);
+        const img = document.createElement('img');
+        img.src = '/static/images/boarding-1.jpg';
+        img.alt = displayName;
+        img.style.display = 'none';
+        img.onload = () => {
+          av.textContent = '';
+          img.style.display = 'block';
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.objectFit = 'cover';
+          img.style.borderRadius = '50%';
+          av.appendChild(img);
+          avatarCache.set(m.sender_id, img.src);
+        };
+        if (window.loadRandomPetImage) {
+          window.loadRandomPetImage(img);
+        } else {
+          avatarCache.set(m.sender_id, img.src);
+        }
+      }
 
       const bubbleWrap = document.createElement('div');
       const bubble = document.createElement('div');
@@ -49,7 +82,7 @@ async function loadMessages(){
 
       const meta = document.createElement('div');
       meta.className = 'message-meta';
-      meta.textContent = `owner • ${formatTs(m.created_at)}`;
+      meta.textContent = `${displayName} - ${formatTs(m.created_at)}`;
 
       bubbleWrap.appendChild(bubble);
       bubbleWrap.appendChild(meta);

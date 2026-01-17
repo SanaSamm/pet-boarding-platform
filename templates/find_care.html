@@ -63,6 +63,31 @@
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 2rem;
         }
+        .pagination {
+            max-width: 1200px;
+            margin: 0 auto 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        .page-link {
+            border: 1px solid #cfe3ff;
+            background: #eaf2ff;
+            color: #1d4ed8;
+            padding: 0.4rem 0.9rem;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .page-link:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .page-info {
+            font-weight: 600;
+            color: #374151;
+        }
 
         .service-card {
             border: 1px solid #eee;
@@ -182,6 +207,7 @@
 </section>
 
 <div class="services-grid" id="servicesGrid"></div>
+<div class="pagination" id="pagination"></div>
 
 <script>
 const priceRange = document.getElementById("priceRange");
@@ -189,17 +215,20 @@ const priceValue = document.getElementById("priceValue");
 const locationInput = document.getElementById("locationInput");
 const searchBtn = document.getElementById("searchBtn");
 const servicesGrid = document.getElementById("servicesGrid");
+const pagination = document.getElementById("pagination");
+let currentPage = 1;
+const perPage = 10;
 
 /* Slider value updates */
 priceRange.addEventListener("input", e => {
     priceValue.textContent = e.target.value;
 });
 
-async function fetchServices() {
+async function fetchServices(page = 1) {
     const maxPrice = priceRange.value;
     const location = locationInput.value.trim();
 
-    let url = `/services?max_price=${maxPrice}`;
+    let url = `/services?max_price=${maxPrice}&page=${page}&per_page=${perPage}`;
     if (location) {
         url += `&location=${encodeURIComponent(location)}`;
     }
@@ -207,10 +236,13 @@ async function fetchServices() {
     try {
         const res = await fetch(url);
         const services = await res.json();
+        currentPage = page;
         renderServices(services);
+        renderPagination(services.length === perPage);
     } catch (err) {
         console.error(err);
         servicesGrid.innerHTML = "<p>" + (window.I18N ? window.I18N.t("find_services_failed") : "Failed to load services.") + "</p>";
+        pagination.innerHTML = "";
     }
 }
 
@@ -257,7 +289,32 @@ function renderServices(services) {
     });
 }
 
-searchBtn.addEventListener("click", fetchServices);
+function renderPagination(hasNext) {
+    if (!pagination) return;
+    pagination.innerHTML = "";
+
+    const prevBtn = document.createElement("button");
+    prevBtn.className = "page-link";
+    prevBtn.textContent = "Prev";
+    prevBtn.disabled = currentPage <= 1;
+    prevBtn.addEventListener("click", () => fetchServices(currentPage - 1));
+
+    const pageInfo = document.createElement("span");
+    pageInfo.className = "page-info";
+    pageInfo.textContent = `Page ${currentPage}`;
+
+    const nextBtn = document.createElement("button");
+    nextBtn.className = "page-link";
+    nextBtn.textContent = "Next";
+    nextBtn.disabled = !hasNext;
+    nextBtn.addEventListener("click", () => fetchServices(currentPage + 1));
+
+    pagination.appendChild(prevBtn);
+    pagination.appendChild(pageInfo);
+    pagination.appendChild(nextBtn);
+}
+
+searchBtn.addEventListener("click", () => fetchServices(1));
 
 const findNearestBtn = document.getElementById('findNearestBtn');
 if (findNearestBtn) {
@@ -301,7 +358,9 @@ if (findNearestBtn) {
                 const res = await fetch(`/services?nearby=true&lat=${lat}&lng=${lng}&max_price=${priceRange.value}`);
                 if (!res.ok) throw new Error('Failed to load nearby services');
                 const services = await res.json();
+                currentPage = 1;
                 renderServices(services);
+                renderPagination(services.length === perPage);
             } catch (err) {
                 console.error(err);
                 alert(window.I18N ? window.I18N.t('find_nearby_failed') : 'Failed to fetch nearby services.');
@@ -314,7 +373,7 @@ if (findNearestBtn) {
 }
 
 /* Load services on page load */
-fetchServices();
+fetchServices(1);
 </script>
 <script src="/static/js/ai_concierge.js"></script>
 <script src="/static/js/pet_images.js"></script>
